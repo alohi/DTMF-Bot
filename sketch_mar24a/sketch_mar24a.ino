@@ -4,6 +4,10 @@
 
 #define _BAUD     9600
 
+#define MobNo "9342833087"
+#define SMOKE_WARNING "Warning, Smoke Detected"
+#define FIRE_WARNING  "Warning, Fire Detected"
+
 // DTMF Decoder Pinouts
 #define D3        A0
 #define D2        A1
@@ -37,7 +41,14 @@
 #define DTMF_SI   6
 #define DTMF_SD   7
 
+#define TURN_DELAY 1000
+
+// MC, MD : Back  Wheels
+// MA, MB : Front Wheels
+
 unsigned int __Speed = INITIAL_SPEED;
+
+boolean ObstFlag = false;
 
 void sendSms(char *No,char *Msg)
 {
@@ -74,6 +85,9 @@ void setup(void)
   pinMode(FIRE,INPUT);
   
   Serial.begin(_BAUD);
+  
+  // Pull up here
+  ///////////////////
 }
 
 void set_Speed(unsigned int _speed)
@@ -83,10 +97,26 @@ void set_Speed(unsigned int _speed)
 
 void motorFw(void)
 {
+  digitalWrite(MA1,HIGH);
+  digitalWrite(MA2,LOW);
+  digitalWrite(MB1,HIGH);
+  digitalWrite(MB2,LOW);
+  digitalWrite(MC1,HIGH);
+  digitalWrite(MC2,LOW);
+  digitalWrite(MD1,HIGH);
+  digitalWrite(MD2,LOW);
 }
 
 void motorBw(void)
 {
+  digitalWrite(MA1,LOW);
+  digitalWrite(MA2,HIGH);
+  digitalWrite(MB1,LOW);
+  digitalWrite(MB2,HIGH);
+  digitalWrite(MC1,LOW);
+  digitalWrite(MC2,HIGH);
+  digitalWrite(MD1,LOW);
+  digitalWrite(MD2,HIGH);
 }
 
 void motorLeft(void)
@@ -99,6 +129,14 @@ void motorRight(void)
 
 void motorStop(void)
 {
+  digitalWrite(MA1,LOW);
+  digitalWrite(MA2,LOW);
+  digitalWrite(MB1,LOW);
+  digitalWrite(MB2,LOW);
+  digitalWrite(MC1,LOW);
+  digitalWrite(MC2,LOW);
+  digitalWrite(MD1,LOW);
+  digitalWrite(MD2,LOW);
 }
 
 void loop(void)
@@ -106,7 +144,7 @@ void loop(void)
   unsigned char dtmfVal;
   dtmfVal = (digitalRead(D3) * 8) + (digitalRead(D2) * 4) + (digitalRead(D1) * 2) + (digitalRead(D0) * 1);
   
-  #define DEBUG
+  #ifdef DEBUG
   Serial.println(dtmfVal);
   #endif
   
@@ -129,8 +167,25 @@ void loop(void)
   }
   
   // IR obstacle sensor handle
+  if(digitalRead(IR) == HIGH)
+  {
+    // Add logic here
+    /////////////////////////////
+    /////////////////////////////
+    motorStop();
+  }
   
   // Smoke sensor
+  if(digitalRead(SMOKE) == HIGH)
+  {
+    delay(100);
+    sendSms(MobNo,SMOKE_WARNING);
+  }
   
   // Fire Sensor
+  if(digitalRead(FIRE) == HIGH)
+  {
+    delay(100);
+    sendSms(MobNo,FIRE_WARNING); 
+  }
 }
