@@ -53,16 +53,19 @@
 // IR Sensor (2 (Arduino) - IR Sensor (DOUT))
 #define IR_DIR    DDRD
 #define IR_PIN    PIND
+#define IR_PORT   PORTD
 #define IR_BIT    1 << 2
 
 // A4 (Arduino) -> DOUT (Smoke Sensor)
 #define SMK_DIR   DDRC
 #define SMK_PIN   PINC
+#define SMK_PORT  PORTC
 #define SMK_BIT   1 << 4
 
 // A5 (Arduino) -> DOUT (Fire Sensor)
 #define FIR_DIR   DDRC
 #define FIR_PIN   PINC
+#define FIR_PORT  PORTC
 #define FIR_BIT   1 << 5
 
 // Indications (LED1,LED2,LED3,LED4) Connection is below
