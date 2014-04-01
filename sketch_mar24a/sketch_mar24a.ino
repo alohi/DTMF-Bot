@@ -2,6 +2,8 @@
 // DTMF Based Landrover
 // Author : Sriharsha
 
+#define DEBUG
+
 #define _BAUD     9600
 
 #define MobNo "9342833087"
@@ -20,7 +22,6 @@
 #define LED       13
 
 // Motor Pinouts
-#define IR        2
 #define EN        3
 #define MA1       4
 #define MA2       5
@@ -30,7 +31,8 @@
 #define MC2       9
 #define MD1       10
 #define MD2       11
-#define SMOKE     A4
+#define SMOKE     2
+#define IR        A4
 #define FIRE      A5
 
 #define DTMF_FW   1
@@ -50,17 +52,23 @@ unsigned int __Speed = INITIAL_SPEED;
 
 boolean ObstFlag = false;
 
+boolean FireFlag = false;
+boolean SmokeFlag = false;
+
 void sendSms(char *No,char *Msg)
 {
-  Serial.println("AT+CMGS=\"");
-  delay(5);
-  Serial.print(No);
-  Serial.print("\"\n\r");
-  delay(5);
+  Serial.println("AT+CMGF=1");
+  delay(200);
+  Serial.println("AT+CMGS=");
+  Serial.println(No);
+  delay(200);
   Serial.println(Msg);
-  delay(5);
+  delay(200);
   Serial.write(0x1A);
+  delay(1000);
 }
+
+
   
 void setup(void)
 {
@@ -92,11 +100,26 @@ void setup(void)
 
 void set_Speed(unsigned int _speed)
 {
-  analogWrite(EN,_speed);
+  //analogWrite(EN,_speed);
+  digitalWrite(EN,HIGH);
 }
 
-void motorFw(void)
+void motorStop(void)
 {
+  digitalWrite(EN,LOW);
+  digitalWrite(MA1,LOW);
+  digitalWrite(MA2,LOW);
+  digitalWrite(MB1,LOW);
+  digitalWrite(MB2,LOW);
+  digitalWrite(MC1,LOW);
+  digitalWrite(MC2,LOW);
+  digitalWrite(MD1,LOW);
+  digitalWrite(MD2,LOW);
+}
+
+void motorBw(void)
+{
+  set_Speed(__Speed);
   digitalWrite(MA1,HIGH);
   digitalWrite(MA2,LOW);
   digitalWrite(MB1,HIGH);
@@ -107,8 +130,9 @@ void motorFw(void)
   digitalWrite(MD2,LOW);
 }
 
-void motorBw(void)
+void motorFw(void)
 {
+  set_Speed(__Speed);
   digitalWrite(MA1,LOW);
   digitalWrite(MA2,HIGH);
   digitalWrite(MB1,LOW);
@@ -121,27 +145,108 @@ void motorBw(void)
 
 void motorLeft(void)
 {
+  set_Speed(__Speed);
+  digitalWrite(MA1,HIGH);
+  digitalWrite(MA2,LOW);
+  digitalWrite(MB1,LOW);
+  digitalWrite(MB2,LOW);
+  digitalWrite(MC1,HIGH);
+  digitalWrite(MC2,LOW);
+  digitalWrite(MD1,LOW);
+  digitalWrite(MD2,LOW);
+  
+  delay(2000);
+  motorStop();
 }
 
 void motorRight(void)
 {
-}
-
-void motorStop(void)
-{
+  set_Speed(__Speed);
   digitalWrite(MA1,LOW);
   digitalWrite(MA2,LOW);
-  digitalWrite(MB1,LOW);
+  digitalWrite(MB1,HIGH);
   digitalWrite(MB2,LOW);
   digitalWrite(MC1,LOW);
   digitalWrite(MC2,LOW);
-  digitalWrite(MD1,LOW);
+  digitalWrite(MD1,HIGH);
   digitalWrite(MD2,LOW);
+  
+  delay(2000);
+  motorStop();
+}
+
+void SmsTest(void)
+{
+  while(1)
+  {
+  if(digitalRead(IR) == HIGH)
+  {
+//  sendSms("9342833087","Obstacle is detected");
+Serial.println("AT+CMGF=1");
+delay(200);
+Serial.println("AT+CMGS=\"9342833087\"");
+delay(200);
+Serial.println("Obstacle is detected");
+delay(200);
+Serial.write(0x1A);
+delay(2000);
+  }
+  }
+}
+
+
+void motorTest(void)
+{
+  char c;
+   digitalWrite(EN,HIGH);
+   Serial.println("Motor test is running..");
+  while(1)
+  {
+    if(Serial.available())
+    {
+    c = Serial.read();
+    switch(c)
+    {
+      case 'a' : motorFw();
+                 break;
+       case 'b' : motorBw();
+                 break;
+                       case 'c' : motorLeft();
+                 break;
+                       case 'd' : motorRight();
+                 break;
+                                        case 'e' : motorStop();
+                 break;
+                                 
+    }
+  }
+}
+}
+
+unsigned char prevVal = 0;
+
+void dtmfTest(void)
+{
+  unsigned char dtmfVal;
+  Serial.println("Dtmf test is running..");
+  while(1)
+  {
+  dtmfVal = (digitalRead(D3) * 8) + (digitalRead(D2) * 4) + (digitalRead(D1) * 2) + (digitalRead(D0) * 1);  
+  if(dtmfVal != prevVal)
+  {
+    Serial.println(dtmfVal);
+    prevVal = dtmfVal;
+  }
+  }
 }
 
 void loop(void)
 {
+  
   unsigned char dtmfVal;
+//  motorTest();
+//dtmfTest();
+//SmsTest();
   dtmfVal = (digitalRead(D3) * 8) + (digitalRead(D2) * 4) + (digitalRead(D1) * 2) + (digitalRead(D0) * 1);
   
   #ifdef DEBUG
@@ -165,7 +270,7 @@ void loop(void)
     case DTMF_SD : set_Speed(__Speed--);
                    break;
   }
-  
+
   // IR obstacle sensor handle
   if(digitalRead(IR) == HIGH)
   {
@@ -173,19 +278,43 @@ void loop(void)
     /////////////////////////////
     /////////////////////////////
     motorStop();
+    FireFlag = false;
+    SmokeFlag = false;
   }
   
   // Smoke sensor
   if(digitalRead(SMOKE) == HIGH)
   {
+    if(FireFlag == false)
+    {
     delay(100);
-    sendSms(MobNo,SMOKE_WARNING);
+    Serial.println("AT+CMGF=1");
+    delay(200);
+    Serial.println("AT+CMGS=\"9342833087\"");
+    delay(200);
+    Serial.println("Smoke detected");
+    delay(200);
+    Serial.write(0x1A);
+    delay(2000);
+    FireFlag = true;
+    }
   }
   
   // Fire Sensor
   if(digitalRead(FIRE) == HIGH)
   {
+    if(SmokeFlag == false)
+    {
     delay(100);
-    sendSms(MobNo,FIRE_WARNING); 
+    Serial.println("AT+CMGF=1");
+    delay(200);
+    Serial.println("AT+CMGS=\"9342833087\"");
+    delay(200);
+    Serial.println("Fire detected");
+    delay(200);
+    Serial.write(0x1A);
+    delay(2000);
+    SmokeFlag = true;
+    }
   }
 }
