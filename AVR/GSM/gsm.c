@@ -276,8 +276,11 @@ Serialprint("AT+CMGS=\"");
 Serialprint(No);
 Serialprint("\"\r\n");
 Serialprint(Msg);
-Serialprint
+Serialwrite(SUB);
 gsmTimerStart();
+while(gsmGetTimeout() == 1 && uartNewLineCount < 2);
+gsmTimerStop();
+// Condition has to add here
 }
 
 unsigned char gsmSetSmsFormat(unsigned char _Mode)
