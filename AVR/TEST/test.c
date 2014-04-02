@@ -1,5 +1,6 @@
 
 #include "test.h"
+#include "gsm.h"
 #include "avr_delay.h"
 
 void testledOnOff(void)
@@ -102,9 +103,31 @@ else if(var == 3)
 Serialprint("DTMF Set: Unknown Error\n");
 }
 
+var = gsmSignalStrength();
+if(var == 0)
+{
+Serialprint("Network Test: Success\n");
+}
+else if(var == 1)
+{
+Serialprint("Network Test: String Error\n");
+}
+else if(var == 2)
+{
+Serialprint("Network Test: Timeout Error\n");
+}
+else if(var == 3)
+{
+Serialprint("Network Test: Unknown Error\n");
+}
+else if(var == 3)
+{
+Serialprint("Network Test: No Signal\n");
+}
+
+
 while(1)
 {
-
 // If Call is detected ('RING')
 if(gsmDetectCall() == 0)
 {

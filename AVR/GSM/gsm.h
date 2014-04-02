@@ -6,6 +6,30 @@
 #include "timer.h"
 
 #define GSM_REGISTER_STATUS_TRIAL_MAX 10
+#define GSM_PWR_KEY_COUNT             1000
+#define GSM_RST_KEY_COUNT             1000
+
+// Gsm Modem timeout delay in microseconds
+#define __GSM_MODEM_TIMEOUT_US        1000
+
+#define __GSM_MODEM_TIMEOUT_COUNT     100 // ( So totale timeout : (__GSM_MODEM_TIMEOUT_US * __GSM_MODEM_TIMEOUT_COUNT)us, or __GSM_MODEM_TIMEOUT_COUNT ms (If __GSM_MODEM_TIMEOUT_US is 1000)
+
+
+// Power Pin
+#define MODEM_PWR_KEY_DIR  DDRB
+#define MODEM_PWR_KEY_PORT DDRB
+#define MODEM_PWR_KEY_BIT  1 << 4
+
+// Reset Pin
+#define MODEM_RST_KEY_DIR  DDRB
+#define MODEM_RST_KEY_PORT DDRB
+#define MODEM_RST_KEY_BIT  1 << 5
+
+// Status pin
+#define MODEM_STA_KEY_DIR  DDRD
+#define MODEM_STA_KEY_PIN  PIND
+#define MODEM_STA_KEY_PORT PORTD
+#define MODEM_STA_KEY_BIT  1 << 2
 
 // Gsm Initiation
 #define gsmBegin(unsigned long osc,unsigned long baud) Serialbegin(osc,baud)
@@ -18,11 +42,21 @@ extern unsigned char gsmDetectModem(void);
 extern unsigned char gsmEchoOff(void);
 extern unsigned char gsmEnableDtmf(void);
 extern unsigned char gsmGetRegStatus(void);
+extern unsigned char gsmNtwkStatus(void);
+extern unsigned char gsmSetSmsFormat(unsigned char);
+extern unsigned char gsmSignalStrength(void);
 
 extern unsigned char gsmDetectCall(void);
 extern unsigned char gsmCallDisStatus(void);
 extern unsigned char gsmConnectCall(void);
 extern unsigned char gsmReadDtmf(void);
 
+extern void          gsmPortinit(void);
+extern unsigned char gsmStatus(void);
+extern void          gsmPowerUp(void);
+extern void          gsmReset(void);
+
+#define SMS_PDU_MODE 0
+#define SMS_TXT_MODE 1
 
 #endif

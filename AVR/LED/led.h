@@ -6,6 +6,17 @@
 
 #include "avr_delay.h"
 
+// Indications (LED1,LED2,LED3,LED4) Connection is below
+
+/*//////////////////////////////////////////////////////////////
+Arduino                  LED
+-------                  ---
+A0            -          LED1
+A1            -          LED2
+A2            -          LED3
+A3            -          LED4
+//////////////////////////////////////////////////////////////*/
+
 #define LED1_DIR  DDRC
 #define LED1_PORT PORTC
 #define LED1_BIT  1 << 0

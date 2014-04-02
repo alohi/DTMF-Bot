@@ -3,7 +3,7 @@
 
 void sensorsBegin(void)
 {
-SMK_DIR &= ~(SMK_BIT);
+//SMK_DIR &= ~(SMK_BIT);
 Adcbegin();
 }
 
@@ -28,4 +28,20 @@ unsigned int sensorsReadFire(void)
 			val = val +  analogRead(FIR_CH);
 		}
 		return val / AVG_SAMPLE_RATE;
+}
+
+unsigned char sensorsDetectObstacle(void)
+{
+if(sensorsReadIR() > IR_THRESHOLD)
+return 0;  // Obstacle Found
+else
+return 1; // No obstacle
+}
+
+unsigned char sensorsDetectFire(void)
+{
+if(sensorsReadFire() > IR_THRESHOLD)
+return 0;  // Fire Detected
+else
+return 1; // No Fires
 }

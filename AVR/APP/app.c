@@ -13,10 +13,7 @@ void initSystem(void)
 	motorBegin();
 	ledBegin();
 	sensorsBegin();
+	gsmPortinit();
 }
-
-
-
-
 
 

@@ -230,5 +230,108 @@ else
 return 15;
 }
 
+unsigned char gsmSignalStrength(void)
+{
+    unsigned char Rssi = 0;
+    Serialflush();
+	Serialprint("AT+CSQ=?\r\n");
+	gsmTimerStart();
+	while(gsmGetTimeout() == 1 && uartNewLineCount < 2);
+    gsmTimerStop();
+	if(uartNewLineCount >= 2)
+	{
+		if(uartReadBuffer[2] == '+' && uartReadBuffer[3] == 'C' && uartReadBuffer[4] == 'S' && uartReadBuffer[5] == 'Q' && uartReadBuffer[6] == ':' )
+		{
+		    if(uartReadBuffer[8] == ',')
+			Rssi = uartReadBuffer[7] - 48;
+			else
+			Rssi = (uartReadBuffer[7] - 48) * 10 + uartReadBuffer[8] - 48;
+			Serialflush();
+			if(Rssi > 0 && Rssi <= 31)
+			return 0;                  // Signal Found
+			else
+			return 4;                  // No Signal
+		}
+		else
+		{
+			Serialflush();
+			return 1;	   // String Error
+		}
+	}
+	else if(timerCount0 >= __GSM_MODEM_TIMEOUT_COUNT)
+	{
+		Serialflush();
+		return 2;
+	}
+	else
+	return 3;
+}
+
+
+
+unsigned char gsmSendSms(char *No,char *Msg)
+{
+Serialflush();
+Serialprint("AT+CMGS=\"");
+Serialprint(No);
+Serialprint("\"\r\n");
+Serialprint(Msg);
+Serialprint
+gsmTimerStart();
+}
+
+unsigned char gsmSetSmsFormat(unsigned char _Mode)
+{
+    Serialflush();
+	Serialprint("AT+CMGF=");
+	Serialwrite(_Mode+48);
+	Serialprint("\r\n");
+	gsmTimerStart();
+	while(gsmGetTimeout() == 1 && uartNewLineCount < 2);
+    gsmTimerStop();
+	if(uartNewLineCount >= 2)
+	{
+		if(uartReadBuffer[2] == 'O' && uartReadBuffer[3] == 'K')
+		{
+			Serialflush();
+			return 0;  // Detected
+		}
+		else
+		{
+			Serialflush();
+			return 1;	   // String Error
+		}
+	}
+	else if(timerCount0 >= __GSM_MODEM_TIMEOUT_COUNT)
+	{
+		Serialflush();
+		return 2;
+	}
+	else
+	return 3;
+}
+
+void gsmReset(void)
+{
+
+}
+
+void gsmPowerUp(void)
+{
+}
+
+unsigned char gsmStatus(void)
+{
+
+}
+
+void gsmPortinit(void)
+{
+MODEM_PWR_KEY_DIR |= MODEM_PWR_KEY_BIT;
+MODEM_PWR_RST_DIR |= MODEM_PWR_RST_BIT;
+MODEM_STA_KEY_DIR &= MODEM_STA_KEY_BIT;
+
+// Enable Pull Up hereg
+}
 
 
