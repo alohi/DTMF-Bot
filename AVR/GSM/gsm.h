@@ -5,7 +5,7 @@
 #include "uart.h"
 #include "timer.h"
 
-#define GSM_REGISTER_STATUS_TRIAL_MAX 100
+#define GSM_REGISTER_STATUS_TRIAL_MAX 10
 
 extern unsigned char getDtmf(void);
 extern unsigned char enableDtmf(void);

@@ -146,7 +146,21 @@ void testModem(void)
 {
 	unsigned char var;
 	var = detectModem();
-	led_indicate_numbers(var+1);
+	if(var != 0)
+	{
+		// Dead lock
+		blinkLED2();
+	}
+	led_indicate_numbers(0);
+	var = getRegisterStatus();
+	if(var != 0)
+	{
+		// Dead lock
+		blinkLED1();
+	}
+	else
+	led_indicate_numbers(15);
+	/*led_indicate_numbers(var+1);
 	_delay_ms(_TEST_INTERVAL);
 	led_indicate_numbers(0);
 	_delay_ms(_TEST_INTERVAL);
@@ -158,7 +172,7 @@ void testModem(void)
 	var = enableDtmf();
 	led_indicate_numbers(var+1);
 	_delay_ms(_TEST_INTERVAL);
-	led_indicate_numbers(15);			
+	led_indicate_numbers(15);	*/		
 }
 
 void callManageloop(void)

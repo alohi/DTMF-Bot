@@ -1,11 +1,51 @@
 
 #include "app.h"
 #include "adc.h"
+#include "timer.h"
 
 #define F_CPU 8000000UL
 #include "avr/delay.h"
 
+void blinkLED1(void)
+{
+	unsigned int i;
+	unsigned char ledNo[5] = {1,2,4,8};
+		while (1)
+		{
+			for(i=0;i<=3;i++)
+			{
+				led_indicate_numbers(ledNo[i]);
+				_delay_ms(100);
+			}
+		}
+}
 
+void blinkLED2(void)
+{
+			while(1)
+			{
+				led_indicate_numbers(15);
+				_delay_ms(100);
+				led_indicate_numbers(0);
+				_delay_ms(100);
+			}
+		}	
+
+void modemReset(void)
+{
+	MODEM_RST_KEY_PORT &= ~(MODEM_RST_KEY_BIT);
+	_delay_ms(500);
+	MODEM_RST_KEY_PORT |= MODEM_RST_KEY_BIT;
+	_delay_ms(500);
+}
+
+void modemPowerUp(void)
+{
+	MODEM_PWR_KEY_PORT &= ~(MODEM_PWR_KEY_BIT);
+	_delay_ms(1000);
+	MODEM_PWR_KEY_PORT |= MODEM_PWR_KEY_BIT;
+	_delay_ms(5000);
+}
 
 void setPullup(void)
 {
@@ -15,6 +55,9 @@ void setPullup(void)
 SMK_PORT |= SMK_BIT;
 //FIR_PORT |= FIR_BIT
 //FIR_PORT &= ~(FIR_BIT);
+
+MODEM_PWR_KEY_PORT |= MODEM_PWR_KEY_BIT;
+MODEM_RST_KEY_PORT |= MODEM_RST_KEY_BIT;
 
 EN_PORT  |= EN_BIT;
 MA1_PORT |= MA1_BIT;
@@ -35,6 +78,9 @@ void setPortDir(void)
 SMK_DIR &= ~(SMK_BIT);
 // Fire Sensor as input
 //FIR_DIR &= ~(FIR_BIT);
+
+MODEM_PWR_KEY_DIR |= MODEM_PWR_KEY_BIT;
+MODEM_RST_KEY_DIR |= MODEM_RST_KEY_BIT;
 
 // Indicators as output
 LED1_DIR |= LED1_BIT;
@@ -70,6 +116,8 @@ void initSystem(void)
 	led_indicate_numbers(15);
 	Adcbegin();
 	analogReference(EXTERNAL_AVCC);
+	modemReset();
+	modemPowerUp();
 }
 
 void led_indicate(int led_no,int OnOff)

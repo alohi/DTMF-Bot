@@ -93,6 +93,13 @@
 #define SMK_PORT  PORTD
 #define SMK_BIT   1 << 2
 
+#define MODEM_PWR_KEY_DIR  DDRB
+#define MODEM_PWR_KEY_PORT DDRB
+#define MODEM_PWR_KEY_BIT  1 << 4
+
+#define MODEM_RST_KEY_DIR  DDRB
+#define MODEM_RST_KEY_PORT DDRB
+#define MODEM_RST_KEY_BIT  1 << 5
 
 
 
@@ -145,6 +152,10 @@ extern void setPortDir(void);
 extern void setPullup(void);
 extern unsigned int readIR(void);
 extern unsigned int readFire(void);
+extern void blinkLED1(void);
+extern void blinkLED2(void);
+extern void modemReset(void);
+extern void modemPowerUp(void);
 
 #endif
 
