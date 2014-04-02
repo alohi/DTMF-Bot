@@ -36,7 +36,10 @@ A3            -          LED4
 extern void ledBegin(void);
 extern void ledNo(unsigned char);
 extern void ledOn(unsigned char,unsigned char);
-extern void ledBlink(unsigned char);
+extern void ledBlinkOne(unsigned char,unsigned int,unsigned char);
+extern void ledBlinkDouble(unsigned char,unsigned char,unsigned int,unsigned char);
+extern void ledBlinkTriple(unsigned char,unsigned char,unsigned char,unsigned int,unsigned char);
+extern void ledBlinkAll(unsigned int,unsigned char);
 extern void ledRun(unsigned char);
 
 #endif

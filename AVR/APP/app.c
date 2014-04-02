@@ -16,4 +16,8 @@ void initSystem(void)
 	gsmPortinit();
 }
 
+void bootTest(void)
+{
+}
+
 

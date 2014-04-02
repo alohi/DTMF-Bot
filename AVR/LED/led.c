@@ -136,9 +136,72 @@ void ledNo(unsigned char No)
 }
 }
 
-void ledBlink(unsigned char _led,)
+void ledBlinkOne(unsigned char _led,unsigned int _delay,unsigned char _repeat)
 {
+unsigned char i;
+ledNo(0);
+for(i=0;i<=_repeat;i++)
+{
+ledOn(_led,1);
+_delay_milli(_delay);
+ledOn(_led,0);
+_delay_milli(_delay);
+}
+ledNo(0);
+}
 
+void ledBlinkDouble(unsigned char _led1,unsigned char _led2,unsigned int _delay,unsigned char _repeat)
+{
+unsigned char i;
+ledNo(0);
+for(i=0;i<=_repeat;i++)
+{
+ledOn(_led1,1);
+ledOn(_led2,1);
+_delay_milli(_delay);
+ledOn(_led1,0);
+ledOn(_led2,0);
+_delay_milli(_delay);
+}
+ledNo(0);
+}
+
+void ledBlinkTriple(unsigned char _led1,unsigned char _led2,unsigned char _led3,unsigned int _delay,unsigned char _repeat)
+{
+unsigned char i;
+ledNo(0);
+for(i=0;i<=_repeat;i++)
+{
+ledOn(_led1,1);
+ledOn(_led2,1);
+ledOn(_led3,1);
+_delay_milli(_delay);
+ledOn(_led1,0);
+ledOn(_led2,0);
+ledOn(_led3,0);
+_delay_milli(_delay);
+}
+ledNo(0);
+}
+
+void ledBlinkAll(unsigned int _delay,unsigned char _repeat)
+{
+unsigned char i;
+ledNo(0);
+for(i=0;i<=_repeat;i++)
+{
+ledOn(1,1);
+ledOn(2,1);
+ledOn(3,1);
+ledOn(4,1);
+_delay_milli(_delay);
+ledOn(1,0);
+ledOn(2,0);
+ledOn(3,0);
+ledOn(4,0);
+_delay_milli(_delay);
+}
+ledNo(0);
 }
 
 void ledRun(unsigned char )
