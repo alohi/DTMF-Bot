@@ -6,15 +6,15 @@ void ledBegin(void)
 {
 // Set As output
 LED1_DIR |= LED1_BIT;
-LED1_DIR |= LED1_BIT;
-LED1_DIR |= LED1_BIT;
-LED1_DIR |= LED1_BIT;
+LED1_DIR |= LED2_BIT;
+LED1_DIR |= LED3_BIT;
+LED1_DIR |= LED4_BIT;
 
 // Pull up
 LED1_PORT |= LED1_BIT;
-LED1_PORT |= LED1_BIT;
-LED1_PORT |= LED1_BIT;
-LED1_PORT |= LED1_BIT;
+LED1_PORT |= LED2_BIT;
+LED1_PORT |= LED3_BIT;
+LED1_PORT |= LED4_BIT;
 }
 
 void ledOn(unsigned char led_no,unsigned char OnOff)
@@ -53,85 +53,85 @@ void ledNo(unsigned char No)
 {
 	switch(No)
 	{
-		case 0 : led_indicate(4,0);
-		         led_indicate(3,0);
-				 led_indicate(2,0);
-				 led_indicate(1,0);
+		case 0 : ledOn(4,0);
+		         ledOn(3,0);
+				 ledOn(2,0);
+				 ledOn(1,0);
 				 break;
-		case 1 : led_indicate(4,1);
-		         led_indicate(3,0);
-		         led_indicate(2,0);
-		         led_indicate(1,0);
+		case 1 : ledOn(4,1);
+		         ledOn(3,0);
+		         ledOn(2,0);
+		         ledOn(1,0);
 		         break;
-		case 2 : led_indicate(4,0);
-		         led_indicate(3,1);
-		         led_indicate(2,0);
-		         led_indicate(1,0);
+		case 2 : ledOn(4,0);
+		         ledOn(3,1);
+		         ledOn(2,0);
+		         ledOn(1,0);
 		         break;
-		case 3 : led_indicate(4,1);
-		         led_indicate(3,1);
-		         led_indicate(2,0);
-		         led_indicate(1,0);
+		case 3 : ledOn(4,1);
+		         ledOn(3,1);
+		         ledOn(2,0);
+		         ledOn(1,0);
 		         break;
-        case 4 : led_indicate(4,0);
-		         led_indicate(3,0);
-		         led_indicate(2,1);
-		         led_indicate(1,0);
+        case 4 : ledOn(4,0);
+		         ledOn(3,0);
+		         ledOn(2,1);
+		         ledOn(1,0);
 		         break;
-	    case 5 : led_indicate(4,1);
-		         led_indicate(3,0);
-		         led_indicate(2,1);
-		         led_indicate(1,0);
+	    case 5 : ledOn(4,1);
+		         ledOn(3,0);
+		         ledOn(2,1);
+		         ledOn(1,0);
 		         break;
-		case 6 : led_indicate(4,0);
-		         led_indicate(3,1);
-		         led_indicate(2,1);
-		         led_indicate(1,0);
+		case 6 : ledOn(4,0);
+		         ledOn(3,1);
+		         ledOn(2,1);
+		         ledOn(1,0);
 		         break;
-		case 7 : led_indicate(4,1);
-		         led_indicate(3,1);
-		         led_indicate(2,1);
-		         led_indicate(1,0);
+		case 7 : ledOn(4,1);
+		         ledOn(3,1);
+		         ledOn(2,1);
+		         ledOn(1,0);
 		         break;
-	    case 8 : led_indicate(4,0);
-		         led_indicate(3,0);
-		         led_indicate(2,0);
-		         led_indicate(1,1);
+	    case 8 : ledOn(4,0);
+		         ledOn(3,0);
+		         ledOn(2,0);
+		         ledOn(1,1);
 		         break;
-		case 9 : led_indicate(4,1);
-		         led_indicate(3,0);
-		         led_indicate(2,0);
-		         led_indicate(1,1);
+		case 9 : ledOn(4,1);
+		         ledOn(3,0);
+		         ledOn(2,0);
+		         ledOn(1,1);
 		         break;
-		case 10: led_indicate(4,0);
-		         led_indicate(3,1);
-		         led_indicate(2,0);
-		         led_indicate(1,1);
+		case 10: ledOn(4,0);
+		         ledOn(3,1);
+		         ledOn(2,0);
+		         ledOn(1,1);
 		         break;
-		case 11: led_indicate(4,1);
-		         led_indicate(3,1);
-		         led_indicate(2,0);
-		         led_indicate(1,1);
+		case 11: ledOn(4,1);
+		         ledOn(3,1);
+		         ledOn(2,0);
+		         ledOn(1,1);
 		         break;
-		case 12: led_indicate(4,0);
-		         led_indicate(3,0);
-		         led_indicate(2,1);
-		         led_indicate(1,1);
+		case 12: ledOn(4,0);
+		         ledOn(3,0);
+		         ledOn(2,1);
+		         ledOn(1,1);
 		         break;
-		case 13: led_indicate(4,1);
-		         led_indicate(3,0);
-		         led_indicate(2,1);
-		         led_indicate(1,1);
+		case 13: ledOn(4,1);
+		         ledOn(3,0);
+		         ledOn(2,1);
+		         ledOn(1,1);
 		         break;
-		case 14: led_indicate(4,0);
-		         led_indicate(3,1);
-		         led_indicate(2,1);
-		         led_indicate(1,1);
+		case 14: ledOn(4,0);
+		         ledOn(3,1);
+		         ledOn(2,1);
+		         ledOn(1,1);
 		         break;
-	    case 15: led_indicate(4,1);
-		         led_indicate(3,1);
-		         led_indicate(2,1);
-		         led_indicate(1,1);
+	    case 15: ledOn(4,1);
+		         ledOn(3,1);
+		         ledOn(2,1);
+		         ledOn(1,1);
 		         break;
 }
 }
@@ -204,7 +204,7 @@ _delay_milli(_delay);
 ledNo(0);
 }
 
-void ledRun(unsigned char )
+void ledRun(unsigned char _val)
 {
 
 }

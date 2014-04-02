@@ -2,16 +2,19 @@
 #include "test.h"
 #include "gsm.h"
 #include "avr_delay.h"
+#include "sensors.h"
+#include "motor.h"
+#include "led.h"
 
 void testledOnOff(void)
 {
 unsigned char i;
-for(i=0;i<=3;i++)
+for(i=1;i<=4;i++)
 {
 _delay_milli(LED_ON_OFF_DELAY);
 ledOn(i,1);
 }
-for(i=0;i<=3;i++)
+for(i=1;i<=4;i++)
 {
 _delay_milli(LED_ON_OFF_DELAY);
 ledOn(i,0);
@@ -20,6 +23,7 @@ ledOn(i,0);
 
 void testledNo(void)
 {
+	unsigned int i;
 for(i=0;i<=15;i++)
 {
 ledNo(i);
@@ -173,9 +177,9 @@ void testReadSensors(void)
 unsigned int val1,val2;
 val1 = sensorsReadIR();
 val2 = sensorsReadFire();
-SerialIntWrite(val1);
+SerialIntWrite(val1,10);
 Serialwrite(9);
-SerialIntWrite(val2);
+SerialIntWrite(val2,10);
 Serialwrite('\n');
 }
 
@@ -183,23 +187,30 @@ void testMotor(void)
 {
 char c;
 Serialflush();
+Serialprint("Motor Test\n");
 while(1)
 {
 if(uartNewLineFlag == 1)
 {
+	Serialprint("LF received\n");
 c = uartReadBuffer[0];
 Serialflush();
 switch(c)
 {
 case 'a': motorForward();
+Serialprint("Motor FW\n");
           break;
 case 'b': motorBackward();
+Serialprint("Motor BW\n");
           break;
 case 'c': motorLeft();
+Serialprint("Motor Left\n");
           break;
 case 'd': motorRight();
+Serialprint("Motor Right\n");
           break;
 case 'e': motorStop();
+Serialprint("Motor Stop\n");
           break;		  
 }
 }

@@ -3,14 +3,15 @@
 #define __motor_h__
 
 #include "avr_delay.h"
+#include <avr/io.h>
 
 // Turning Delay
 #define MOTOR_TURN_DELAY 2000
 
 // All Enable Pin of motor ( 3 (Arduino) -> EN (L293D)
-#define EN_DIR    DDRD
+/*#define EN_DIR    DDRD
 #define EN_PORT   PORTD
-#define EN_BIT    1 << 3
+#define EN_BIT    1 << 3*/
 
 // 4 (Arduino) -> MA1 of L293D - 1
 #define MA1_DIR   DDRD

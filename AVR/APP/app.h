@@ -19,6 +19,10 @@
 #define DTMF_SP    7
 #define DTMF_SM    9
 
+extern void initSystem(void);
+extern void bootTest(void);
+extern void app(void);
+
 
 #endif
 

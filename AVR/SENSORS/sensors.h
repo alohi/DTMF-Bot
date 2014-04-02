@@ -7,12 +7,12 @@
 #define IR_CH  4
 #define FIR_CH 5
 
-/*
+
 #define SMK_DIR         DDRD
 #define SMK_PIN         PIND
 #define SMK_PORT        PORTD
 #define SMK_BIT         1 << 2
-*/
+
 
 #define AVG_SAMPLE_RATE 50
 

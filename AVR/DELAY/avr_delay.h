@@ -5,7 +5,10 @@
 #define F_CPU 8000000UL
 #include <util/delay.h>
 
-#define _delay_milli(val) _delay_ms(val)
-#define _delay_micro(val) _delay_us(val)
+extern void delay_us(unsigned int);
+extern void delay_ms(unsigned int);
+
+#define _delay_milli(val) delay_ms(val)
+#define _delay_micro(val) delay_us(val)
 
 #endif

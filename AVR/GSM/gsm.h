@@ -17,22 +17,22 @@
 
 // Power Pin
 #define MODEM_PWR_KEY_DIR  DDRB
-#define MODEM_PWR_KEY_PORT DDRB
+#define MODEM_PWR_KEY_PORT PORTB
 #define MODEM_PWR_KEY_BIT  1 << 4
 
 // Reset Pin
 #define MODEM_RST_KEY_DIR  DDRB
-#define MODEM_RST_KEY_PORT DDRB
+#define MODEM_RST_KEY_PORT PORTB
 #define MODEM_RST_KEY_BIT  1 << 5
 
 // Status pin
 #define MODEM_STA_KEY_DIR  DDRD
 #define MODEM_STA_KEY_PIN  PIND
 #define MODEM_STA_KEY_PORT PORTD
-#define MODEM_STA_KEY_BIT  1 << 2
+#define MODEM_STA_KEY_BIT  1 << 3
 
 // Gsm Initiation
-#define gsmBegin(unsigned long osc,unsigned long baud) Serialbegin(osc,baud)
+#define gsmBegin(osc,baud) Serialbegin(osc,baud)
 
 extern void          gsmTimerStart(void);
 extern void          gsmTimerStop(void);

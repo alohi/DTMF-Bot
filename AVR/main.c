@@ -8,10 +8,15 @@
 #include "sensors.h"
 #include "timer.h"
 #include "uart.h"
-
+#include "test.h"
 
 
 int main(void)
 {
+initSystem();
+_delay_milli(3000);
+bootTest();
+while(1)
+app();
 
 }

@@ -3,7 +3,7 @@
 
 void sensorsBegin(void)
 {
-//SMK_DIR &= ~(SMK_BIT);
+SMK_DIR &= ~(SMK_BIT);
 Adcbegin();
 }
 
@@ -23,7 +23,7 @@ unsigned int sensorsReadFire(void)
 {
 		unsigned int val = 0;
 		unsigned int i;
-		for(i=0;i<=AVG_SAMPLE_RATEi++)
+		for(i=0;i<=AVG_SAMPLE_RATE;i++)
 		{
 			val = val +  analogRead(FIR_CH);
 		}

@@ -2,6 +2,7 @@
 
 #include "gsm.h"
 #include "app.h"
+#include "avr_delay.h"
 
 void gsmTimerStart(void)
 {
@@ -65,7 +66,7 @@ unsigned char gsmEchoOff(void)
     gsmTimerStop();
 	if(uartNewLineCount >= 2)
 	{
-		if(uartReadBuffer[2] == 'O' && uartReadBuffer[1] == '3')
+		if(uartReadBuffer[2] == 'O' && uartReadBuffer[3] == 'K')
 		{
 			Serialflush();
 			return 0;  // Detected
@@ -97,7 +98,11 @@ Serialflush();
 return 0;
 }
 else 
-return 1;
+{
+	//Serialflush();
+	return 1;
+}
+
 }
 else 
 return 2;
@@ -113,7 +118,10 @@ unsigned char gsmCallDisStatus(void)
 			return 0; // Call disconnected
 		}
 		else
-		return 1;
+		{
+		//	Serialflush();
+					return 1;
+		}
 	}
 	else
 	return 2;
@@ -316,25 +324,45 @@ unsigned char gsmSetSmsFormat(unsigned char _Mode)
 
 void gsmReset(void)
 {
-
+	MODEM_RST_KEY_PORT &= ~(MODEM_RST_KEY_BIT);
+	_delay_milli(GSM_PWR_KEY_COUNT);
+	MODEM_RST_KEY_PORT |= MODEM_RST_KEY_BIT;
+	_delay_milli(GSM_PWR_KEY_COUNT);
 }
 
 void gsmPowerUp(void)
 {
+	MODEM_RST_KEY_PORT |= MODEM_RST_KEY_BIT;
+	MODEM_PWR_KEY_PORT &= ~(MODEM_PWR_KEY_BIT);
+	_delay_milli(GSM_PWR_KEY_COUNT);
+	MODEM_PWR_KEY_PORT |= MODEM_PWR_KEY_BIT;
+	_delay_milli(GSM_PWR_KEY_COUNT);
 }
 
 unsigned char gsmStatus(void)
 {
-
+return MODEM_STA_KEY_PIN & MODEM_STA_KEY_BIT;
 }
+
+/*unsigned char gsmTryPowerUp(void)
+{
+	MODEM_RST_KEY_PORT |= MODEM_RST_KEY_BIT;
+	MODEM_PWR_KEY_PORT &= ~(MODEM_PWR_KEY_BIT);
+	delay_ms(GSM_PWR_KEY_COUNT);
+	MODEM_PWR_KEY_PORT |= MODEM_PWR_KEY_BIT;
+	delay_ms(GSM_PWR_KEY_COUNT);
+}*/
 
 void gsmPortinit(void)
 {
 MODEM_PWR_KEY_DIR |= MODEM_PWR_KEY_BIT;
-MODEM_PWR_RST_DIR |= MODEM_PWR_RST_BIT;
+MODEM_RST_KEY_DIR |= MODEM_RST_KEY_BIT;
 MODEM_STA_KEY_DIR &= MODEM_STA_KEY_BIT;
 
-// Enable Pull Up hereg
+// Enable Pull Up 
+MODEM_PWR_KEY_PORT |= MODEM_PWR_KEY_BIT;
+MODEM_RST_KEY_PORT |= MODEM_RST_KEY_BIT;
+MODEM_STA_KEY_PORT &= ~(MODEM_STA_KEY_BIT);
 }
 
 
