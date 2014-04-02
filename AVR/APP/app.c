@@ -44,7 +44,6 @@ void modemPowerUp(void)
 	MODEM_PWR_KEY_PORT &= ~(MODEM_PWR_KEY_BIT);
 	_delay_ms(1000);
 	MODEM_PWR_KEY_PORT |= MODEM_PWR_KEY_BIT;
-	_delay_ms(5000);
 }
 
 void setPullup(void)
