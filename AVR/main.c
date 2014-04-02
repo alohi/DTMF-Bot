@@ -207,7 +207,6 @@ void callManageloop(void)
 int main(void)
 {
 	unsigned char var;
-	gsmBegin(__CLK__FREQUENCY,__BAUD_RATE___);
 	initSystem();
 
 	//gsmTest();

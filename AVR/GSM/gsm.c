@@ -3,17 +3,35 @@
 #include "gsm.h"
 #include "app.h"
 
-unsigned char detectModem(void)
+void gsmTimerStart(void)
 {
-Serialflush();
-Serialprint("AT\r\n");
 timerClearCount(HW_TIMER0);
 timerBegin(__CLK__FREQUENCY,__GSM_MODEM_TIMEOUT_US,HW_TIMER0);
 timerEnableInterrupt(HW_TIMER0);
 timerStart(HW_TIMER0);
-while(timerCount0 < __GSM_MODEM_TIMEOUT_COUNT && uartNewLineCount < 2);
+}
+
+void gsmTimerStop(void)
+{
 timerStop(HW_TIMER0);
 timerDisableInterrupt(HW_TIMER0);
+}
+
+unsigned char gsmGetTimeout(void)
+{
+if(timerCount0 >= __GSM_MODEM_TIMEOUT_COUNT)
+return 0;
+else 
+return 1;
+}
+
+unsigned char gsmDetectModem(void)
+{
+Serialflush();
+Serialprint("AT\r\n");
+gsmTimerStart();
+while(gsmGetTimeout() == 1 && uartNewLineCount < 2);
+gsmTimerStop();
 if(uartNewLineCount >= 2)
 {
 	if(uartReadBuffer[2] == 'O' && uartReadBuffer[3] == 'K')
@@ -38,17 +56,13 @@ return 3; // Unknown Error
 
 }
 
-unsigned char echoOff(void)
+unsigned char gsmEchoOff(void)
 {
 	Serialflush();
 	Serialprint("ATE0\r\n");
-	timerClearCount(HW_TIMER0);
-	timerBegin(__CLK__FREQUENCY,__GSM_MODEM_TIMEOUT_US,HW_TIMER0);
-	timerEnableInterrupt(HW_TIMER0);
-	timerStart(HW_TIMER0);
-	while(timerCount0 < __GSM_MODEM_TIMEOUT_COUNT && uartNewLineCount < 2);
-	timerStop(HW_TIMER0);
-	timerDisableInterrupt(HW_TIMER0);
+    gsmTimerStart();
+	while(gsmGetTimeout() == 1 && uartNewLineCount < 2);
+    gsmTimerStop();
 	if(uartNewLineCount >= 2)
 	{
 		if(uartReadBuffer[2] == 'O' && uartReadBuffer[1] == '3')
@@ -73,7 +87,7 @@ unsigned char echoOff(void)
 
 }
 
-unsigned char detectCall(void)
+unsigned char gsmDetectCall(void)
 {
 if(uartNewLineCount >= 2)
 {
@@ -89,7 +103,7 @@ else
 return 2;
 }
 
-unsigned char Callstatus(void)
+unsigned char gsmCallDisStatus(void)
 {
 	if(uartNewLineCount >= 2)
 	{
@@ -105,18 +119,13 @@ unsigned char Callstatus(void)
 	return 2;
 }
 
-unsigned char connectCall(void)
+unsigned char gsmConnectCall(void)
 {
 	Serialflush();
 	Serialprint("ATA\r\n");
-	timerClearCount(HW_TIMER0);
-	timerBegin(__CLK__FREQUENCY,__GSM_MODEM_TIMEOUT_US,HW_TIMER0);
-	timerEnableInterrupt(HW_TIMER0);
-	timerStart(HW_TIMER0);
-	while(timerCount0 < __GSM_MODEM_TIMEOUT_COUNT && uartNewLineCount < 2);
-	timerStop(HW_TIMER0);
-// Condition has to add
-//return 1;
+    gsmTimerStart();
+	while(gsmGetTimeout() == 1 && uartNewLineCount < 2);
+    gsmTimerStop();
 if(uartNewLineCount >= 2)
 {
 		if(uartReadBuffer[2] == 'O' && uartReadBuffer[3] == 'K')
@@ -139,18 +148,13 @@ else
 return 3;
 }
 
-unsigned char enableDtmf(void)
+unsigned char gsmEnableDtmf(void)
 {
 	Serialflush();
 	Serialprint("AT+DDET=1\r\n");
-	timerClearCount(HW_TIMER0);
-	timerBegin(__CLK__FREQUENCY,__GSM_MODEM_TIMEOUT_US,HW_TIMER0);
-	timerEnableInterrupt(HW_TIMER0);
-	timerStart(HW_TIMER0);
-	while(timerCount0 < __GSM_MODEM_TIMEOUT_COUNT && uartNewLineCount < 2);
-	timerStop(HW_TIMER0);
-	// Condition has to add
-	//return 1;
+	gsmTimerStart();
+	while(gsmGetTimeout() == 1 && uartNewLineCount < 2);
+    gsmTimerStop();
 	if(uartNewLineCount >= 2)
 	{
 		if(uartReadBuffer[2] == 'O' && uartReadBuffer[3] == 'K')
@@ -175,21 +179,16 @@ unsigned char enableDtmf(void)
 
 
 
-unsigned char getRegisterStatus(void)
+unsigned char gsmGetRegStatus(void)
 {
 	unsigned int i;
 	for(i = 0;i <= GSM_REGISTER_STATUS_TRIAL_MAX;i++)
 	{
 		Serialflush();
 		Serialprint("AT+CREG?\r\n");
-		timerClearCount(HW_TIMER0);
-		timerBegin(__CLK__FREQUENCY,__GSM_MODEM_TIMEOUT_US,HW_TIMER0);
-		timerEnableInterrupt(HW_TIMER0);
-		timerStart(HW_TIMER0);
-		while(timerCount0 < __GSM_MODEM_TIMEOUT_COUNT && uartNewLineCount < 2);
-		timerStop(HW_TIMER0);
-		// Condition has to add
-		//return 1;
+		gsmTimerStart();
+		while(gsmGetTimeout() == 1 && uartNewLineCount < 2);
+		gsmTimerStop();
 		if(uartNewLineCount >= 2)
 		{
 		if(uartReadBuffer[2] == '+' && uartReadBuffer[3] == 'C' &&  uartReadBuffer[4] == 'R' && uartReadBuffer[5] == 'E' && uartReadBuffer[6] == 'G' && uartReadBuffer[7] == ':')
@@ -213,7 +212,7 @@ unsigned char getRegisterStatus(void)
 
 
 
-unsigned char getDtmf(void)
+unsigned char gsmReadDtmf(void)
 {
 unsigned char val;
 if(uartNewLineCount >= 2)
@@ -231,9 +230,5 @@ else
 return 15;
 }
 
-void gsmBegin(unsigned long osc,unsigned long baud)
-{
-	Serialbegin(osc,baud);
-}
 
 
