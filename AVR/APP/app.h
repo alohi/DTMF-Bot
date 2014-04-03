@@ -10,6 +10,9 @@
 // Gsm Modem baud rate
 #define __BAUD_RATE___ 9600
 
+
+#define MOB_NO "9342833087"
+
 // DTMF Key Definition
 #define DTMF_FW    2
 #define DTMF_BW    8

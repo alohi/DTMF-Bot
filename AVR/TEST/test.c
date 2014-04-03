@@ -172,6 +172,24 @@ Serialprint("Voice Call Disconnected\n");
 }
 }
 
+void testSesnors(void)
+{
+	if(sensorsDetectObstacle() == 0)
+	{
+		Serialprint("Obstacle Detected\n");
+	}
+	
+		if(sensorsDetectFire() == 0)
+		{
+			Serialprint("Fire Detected\n");
+		}
+		
+				if(sensorsDetectSmoke() == 0)
+				{
+					Serialprint("Smoke Detected\n");
+				}
+}
+
 void testReadSensors(void)
 {
 unsigned int val1,val2;

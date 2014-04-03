@@ -55,10 +55,11 @@ unsigned long OscillatorFrequency = 1000000;
 void Serialbegin(unsigned long OscillatorFrequency,unsigned long baudRate)
 {
 	unsigned long autoReloadvalue = (((OscillatorFrequency / (baudRate * 16))) - 1);
-	UBRR0L = autoReloadvalue;
-	UBRR0H = autoReloadvalue >> 8;
-	UCSR0B = ((1<<TXEN0)|(1<<RXEN0)) | (1<<RXCIE0);
-    UCSR0C = ((1<<UCSZ00)|(1<<UCSZ01));
+	UCSRB = 0x00;
+	UBRRL = autoReloadvalue;
+	UBRRH = autoReloadvalue >> 8;
+	UCSRB = ((1<<TXEN)|(1<<RXEN)) | (1<<RXCIE);
+    UCSRC = ((1<<URSEL)|(3<<UCSZ0));
 }
 
 /*** Function    : Serialavailable
@@ -68,7 +69,7 @@ void Serialbegin(unsigned long OscillatorFrequency,unsigned long baudRate)
 **/
 unsigned char Serialavailable(void)
 {
-	if((UCSR0A &(1<<RXC0)) == 1)
+	if((UCSRA &(1<<RXC)) == 1)
 	return 1;
 	else
 	return 0;
@@ -82,9 +83,9 @@ unsigned char Serialavailable(void)
 **/
 void Serialwrite(char Byte)
 {
- while((UCSR0A &(1<<UDRE0)) == 0);
+ while((UCSRA &(1<<UDRE)) == 0);
  // Transmit data
- UDR0 = Byte;
+ UDR = Byte;
 }
 
 /*** Function    : Serialread
@@ -94,8 +95,8 @@ void Serialwrite(char Byte)
 **/
 char Serialread(void)
 {
-	 while((UCSR0A &(1<<RXC0)) == 0);
-	 return UDR0;
+	 while((UCSRA &(1<<RXC)) == 0);
+	 return UDR;
 }
 
 /*** Function    : Serialprint
@@ -152,9 +153,9 @@ Serialprint(__bPtr);
 **   Return      : None
 **   Description : It is ISR for UART Receive (It will trigger if any byte is received)
 **/
-ISR(USART_RX_vect)
+ISR(USART_RXC_vect)
 {
-volatile char temp = UDR0;
+volatile char temp = UDR;
 uartReadBuffer[uartReadCount++] = temp;
 if(temp == LF)
 {

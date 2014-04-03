@@ -8,6 +8,9 @@
 #include "avr_delay.h"
 #include "led.h"
 
+unsigned char flag = 0;
+unsigned char CallFlag = 0;
+
 void initSystem(void)
 {
 	Serialbegin(__CLK__FREQUENCY,__BAUD_RATE___);
@@ -46,6 +49,7 @@ void bootTest(void)
 	}
 		ledNo(0);
 		
+		_delay_milli(200);
 	// Register Test
 	var = gsmGetRegStatus();
 	if(var == 0)
@@ -88,18 +92,19 @@ void app(void)
 		var = gsmConnectCall();
 		if(var == 0)
 		{
-				ledBlinkOne(1,50,10);
-				ledBlinkOne(2,50,10);
-				ledBlinkOne(3,50,10);
-				ledBlinkOne(4,50,10);
+			CallFlag = 1;
+				ledBlinkOne(1,50,2);
+				ledBlinkOne(2,50,2);
+				ledBlinkOne(3,50,2);
+				ledBlinkOne(4,50,2);
 				ledNo(0);	
 		}
 		else
 		{
-							ledBlinkOne(1,500,10);
-							ledBlinkOne(2,500,10);
-							ledBlinkOne(3,500,10);
-							ledBlinkOne(4,500,10);
+							ledBlinkOne(1,500,2);
+							ledBlinkOne(2,500,2);
+							ledBlinkOne(3,500,2);
+							ledBlinkOne(4,500,2);
 							ledNo(0);
 		}
 	}
@@ -109,18 +114,77 @@ void app(void)
   if(dtmfVal < 15)
   {
 	  ledNo(dtmfVal);
+	  switch(dtmfVal)
+	  {
+		  case DTMF_FW : motorForward();
+		                 break;
+		  case DTMF_BW : motorBackward();
+		                 break;
+		  case DTMF_LT : motorLeft();
+		                 break;
+          case DTMF_RT : motorRight();
+		                 break;
+		  case DTMF_ST : motorStop();
+		                 break;
+	  }
   }
   
   // Check Disconnect
   var = gsmCallDisStatus();
   if(var == 0)
   {
-	  				ledBlinkOne(1,50,10);
-	  				ledBlinkOne(2,50,10);
-	  				ledBlinkOne(3,50,10);
-	  				ledBlinkOne(4,50,10);
+	  CallFlag = 0;
+	  			    motorStop();
+	  				ledBlinkOne(1,50,2);
+	  				ledBlinkOne(2,50,2);
+	  				ledBlinkOne(3,50,2);
+	  				ledBlinkOne(4,50,2);
 	  				ledNo(0);
   }
-}
+  
+  if(sensorsDetectObstacle() == 0)
+  {
+	  ledBlinkOne(1,20,10);
+	  /*var = gsmSetSmsFormat(1);
+	  if(var == 0)
+	  {
+		  ledBlinkOne(1,100,20);
+		  //gsmSendSms(MOB_NO,"Obstacle Detected");
+		  // gsmSendSmsTemp(0);
+	  }*/
+	 if(flag == 0 && CallFlag == 1)
+	 {
+      flag = 1;
+	  motorLeft();
+	 }
+	 else if(flag == 1 && CallFlag == 1)
+	 {
+		 flag = 0;
+		 motorRight();
+	 }
+  }
+  else if(sensorsDetectFire() == 0)
+  {
+	  ledBlinkOne(2,20,10);
+	  var = gsmSetSmsFormat(1);
+	  if(var == 0)
+	  {
+		  ledBlinkOne(2,100,20);
+		  	  //gsmSendSms(MOB_NO,"Fire Detected");
+				 gsmSendSmsTemp(1);
+	  }
+  }
+    else if(sensorsDetectSmoke() == 0)
+    {
+		ledBlinkOne(3,20,10);
+	    	  var = gsmSetSmsFormat(1);
+	    	  if(var == 0)
+	    	  {
+		    	  ledBlinkOne(3,100,20);
+		    	  gsmSendSmsTemp(2);
+    }
+	}
+  
+  }
 
 

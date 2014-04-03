@@ -109,15 +109,15 @@ void timerEnableInterrupt(unsigned char TimerNo)
 {
 	if(TimerNo == HW_TIMER0)
 	{
-	TIMSK0 |= 1 << TOIE0;
+	TIMSK |= 1 << TOIE0;
 	}
 	else if(TimerNo == HW_TIMER1)
 	{
-	TIMSK1 |= 1 << TOIE1;		
+	TIMSK |= 1 << TOIE1;		
 	}
 	else if(TimerNo == HW_TIMER2)
 	{
-	TIMSK2 |= 1 << TOIE2;	
+	TIMSK |= 1 << TOIE2;	
 	}
 	
 	// Enable Global Interrupts
@@ -128,15 +128,15 @@ void timerDisableInterrupt(unsigned char TimerNo)
 {
 	if(TimerNo == HW_TIMER0)
 	{
-		TIMSK0 &= ~(1 << TOIE0);
+		TIMSK &= ~(1 << TOIE0);
 	}
 	else if(TimerNo == HW_TIMER1)
 	{
-		TIMSK1 &= ~(1 << TOIE1);
+		TIMSK &= ~(1 << TOIE1);
 	}
 	else if(TimerNo == HW_TIMER2)
 	{
-		TIMSK2 &= ~(1 << TOIE2);
+		TIMSK &= ~(1 << TOIE2);
 	}
 }
 

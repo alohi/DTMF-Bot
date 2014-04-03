@@ -9,5 +9,6 @@ extern void testledNo(void);
 extern void testgsmSimul(void);
 extern void testMotor(void);
 extern void testReadSensors(void);
+extern void testSesnors(void);
 
 #endif

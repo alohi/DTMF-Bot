@@ -16,7 +16,16 @@ int main(void)
 initSystem();
 _delay_milli(3000);
 bootTest();
+Serialflush();
 while(1)
-app();
+{
+app();	
+//testReadSensors();
+//testSesnors();
+}
 
+/*while (1)
+{
+	testMotor();
+}*/
 }

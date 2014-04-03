@@ -283,12 +283,39 @@ Serialflush();
 Serialprint("AT+CMGS=\"");
 Serialprint(No);
 Serialprint("\"\r\n");
+_delay_milli(50);
 Serialprint(Msg);
 Serialwrite(SUB);
-gsmTimerStart();
+_delay_milli(100);
+/*gsmTimerStart();
 while(gsmGetTimeout() == 1 && uartNewLineCount < 2);
-gsmTimerStop();
+gsmTimerStop();*/
+Serialflush();
 // Condition has to add here
+}
+
+void gsmSendSmsTemp(unsigned char _Warn)
+{
+	Serialflush();
+	Serialprint("AT+CMGS=\"9845742906\"\r\n");
+	_delay_milli(1000);
+	if(_Warn == 0)
+	{
+		Serialprint("Obstacle Detected\r\n");
+		Serialwrite(0x1A);
+	}
+	else if(_Warn == 1)
+	{
+				Serialprint("Fire Detected\r\n");
+				Serialwrite(0x1A);
+	}
+		else if(_Warn == 2)
+		{
+			Serialprint("Smoke Detected\r\n");
+			Serialwrite(0x1A);
+		}
+	_delay_milli(100);
+	Serialflush();
 }
 
 unsigned char gsmSetSmsFormat(unsigned char _Mode)
@@ -362,7 +389,7 @@ MODEM_STA_KEY_DIR &= MODEM_STA_KEY_BIT;
 // Enable Pull Up 
 MODEM_PWR_KEY_PORT |= MODEM_PWR_KEY_BIT;
 MODEM_RST_KEY_PORT |= MODEM_RST_KEY_BIT;
-MODEM_STA_KEY_PORT &= ~(MODEM_STA_KEY_BIT);
+MODEM_STA_KEY_PORT |= MODEM_STA_KEY_BIT;
 }
 
 

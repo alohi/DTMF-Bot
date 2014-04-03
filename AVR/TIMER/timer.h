@@ -48,12 +48,12 @@ extern volatile unsigned int timerCount2;
 #endif
 
 
-#define TIMER_NO_CLOCK_SOURCE   TCCR0B &= ~(1 << CS02) | ~(1 << CS01) | ~(1 << CS00)                             // 000
-#define TIMER_NO_PRESCALAR      TCCR0B |= (TCCR0B & ~(1 << CS02)) | (TCCR0B & ~(1 << CS01)) | (1 << CS00)        // 001
-#define TIMER_8_PRESCALAR       TCCR0B |= (TCCR0B & ~(1 << CS02)) | (1 << CS01) | (TCCR0B & ~(1 << CS00)         // 010
-#define TIMER_64_PRESCALAR      TCCR0B |= (TCCR0B & ~(1 << CS02)) | (1 << CS01) | (1 << CS00)                    // 011
-#define TIMER_256_PRESCALAR     TCCR0B |= (1 << CS02) | (TCCR0B & ~(1 << CS01))| (TCCR0B & ~(1 << CS00))         // 100
-#define TIMER_1024_PRESCALAR    TCCR0B |= (1 << CS02) | (TCCR0B & ~(1 << CS01))| (1 << CS00)                     // 101
+#define TIMER_NO_CLOCK_SOURCE   TCCR0 &= ~(1 << CS02) | ~(1 << CS01) | ~(1 << CS00)                             // 000
+#define TIMER_NO_PRESCALAR      TCCR0 |= (TCCR0 & ~(1 << CS02)) | (TCCR0 & ~(1 << CS01)) | (1 << CS00)        // 001
+#define TIMER_8_PRESCALAR       TCCR0 |= (TCCR0 & ~(1 << CS02)) | (1 << CS01) | (TCCR0 & ~(1 << CS00)         // 010
+#define TIMER_64_PRESCALAR      TCCR0 |= (TCCR0 & ~(1 << CS02)) | (1 << CS01) | (1 << CS00)                    // 011
+#define TIMER_256_PRESCALAR     TCCR0 |= (1 << CS02) | (TCCR0 & ~(1 << CS01))| (TCCR0 & ~(1 << CS00))         // 100
+#define TIMER_1024_PRESCALAR    TCCR0 |= (1 << CS02) | (TCCR0 & ~(1 << CS01))| (1 << CS00)                     // 101
 
 // External clock is pending
 

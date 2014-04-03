@@ -24,5 +24,6 @@ extern unsigned int  sensorsReadIR(void);
 extern unsigned int  sensorsReadFire(void);
 extern unsigned char sensorsDetectObstacle(void);
 extern unsigned char sensorsDetectFire(void);
+extern unsigned char sensorsDetectSmoke(void);
 
 #endif

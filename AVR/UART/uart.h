@@ -34,7 +34,7 @@
 #define SERIAL_RX_INTERRUPT_ENABLE   1
 
 // UART Buffer Size
-#define UART_RX_BUFFER_SIZE          64
+#define UART_RX_BUFFER_SIZE          20
 
 // New Line Index Buffer Size
 #define NEW_LINE_INDEX_BUFFER_SIZE   10

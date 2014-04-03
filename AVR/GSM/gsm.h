@@ -5,7 +5,7 @@
 #include "uart.h"
 #include "timer.h"
 
-#define GSM_REGISTER_STATUS_TRIAL_MAX 10
+#define GSM_REGISTER_STATUS_TRIAL_MAX 30
 #define GSM_PWR_KEY_COUNT             1000
 #define GSM_RST_KEY_COUNT             1000
 
@@ -18,12 +18,12 @@
 // Power Pin
 #define MODEM_PWR_KEY_DIR  DDRB
 #define MODEM_PWR_KEY_PORT PORTB
-#define MODEM_PWR_KEY_BIT  1 << 4
+#define MODEM_PWR_KEY_BIT  1 << 5
 
 // Reset Pin
 #define MODEM_RST_KEY_DIR  DDRB
 #define MODEM_RST_KEY_PORT PORTB
-#define MODEM_RST_KEY_BIT  1 << 5
+#define MODEM_RST_KEY_BIT  1 << 4
 
 // Status pin
 #define MODEM_STA_KEY_DIR  DDRD
@@ -45,6 +45,10 @@ extern unsigned char gsmGetRegStatus(void);
 extern unsigned char gsmNtwkStatus(void);
 extern unsigned char gsmSetSmsFormat(unsigned char);
 extern unsigned char gsmSignalStrength(void);
+extern unsigned char gsmSendSms(char*,char*);
+
+// temp
+extern void gsmSendSmsTemp(unsigned char);
 
 extern unsigned char gsmDetectCall(void);
 extern unsigned char gsmCallDisStatus(void);
