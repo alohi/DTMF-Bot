@@ -277,45 +277,61 @@ unsigned char gsmSignalStrength(void)
 
 
 
-unsigned char gsmSendSms(char *No,char *Msg)
+unsigned int gsmSendSms(char *No,char *Msg)
 {
+unsigned char temp;
+unsigned char Var = 0;
+unsigned int  var = 1;
+unsigned int  loc = 0;
 Serialflush();
+gsmTimerStart();
 Serialprint("AT+CMGS=\"");
 Serialprint(No);
 Serialprint("\"\r\n");
-_delay_milli(50);
+while(gsmGetTimeout() == 1 && uartReadBuffer[uartReadCount] != ' ');
+gsmTimerStop();
+if(uartReadCount >= 3)
+{
+if(uartReadBuffer[2] != 0x3E && uartReadBuffer[uartReadCount] != 0x20)
+{
+return SEND_SMS_STRING_ERROR;
+}
+else if(uartReadBuffer[2] == 0x3E && uartReadBuffer[uartReadCount] == 0x20) // Now you can send sms
+{
+Serialflush();
+gsmTimerStart();
 Serialprint(Msg);
 Serialwrite(SUB);
-_delay_milli(100);
-/*gsmTimerStart();
-while(gsmGetTimeout() == 1 && uartNewLineCount < 2);
-gsmTimerStop();*/
-Serialflush();
-// Condition has to add here
-}
-
-void gsmSendSmsTemp(unsigned char _Warn)
+while(gsmGetTimeout() == 1 && uartNewLineCount < 4);
+gsmTimerStop();
+// Check location
+if(uartReadBuffer[2] == '+' && uartReadBuffer[3] == 'C' && uartReadBuffer[4] == 'M' && uartReadBuffer[5] == 'G' && uartReadBuffer[6] == 'S' && uartReadBuffer[7] == ':' && uartReadBuffer[8] == ' ')
 {
-	Serialflush();
-	Serialprint("AT+CMGS=\"9845742906\"\r\n");
-	_delay_milli(1000);
-	if(_Warn == 0)
-	{
-		Serialprint("Obstacle Detected\r\n");
-		Serialwrite(0x1A);
-	}
-	else if(_Warn == 1)
-	{
-				Serialprint("Fire Detected\r\n");
-				Serialwrite(0x1A);
-	}
-		else if(_Warn == 2)
-		{
-			Serialprint("Smoke Detected\r\n");
-			Serialwrite(0x1A);
-		}
-	_delay_milli(100);
-	Serialflush();
+gsmTimerStart();
+for(temp = 9;uartReadBuffer[temp]  != 0x0D && gsmGetTimeout() == 1;temp++);
+gsmTimerStop();
+if(timerCount0 >= __GSM_MODEM_TIMEOUT_COUNT)
+return SEND_SMS_ERROR_WHILE_READING_LOC;
+else 
+{
+for(Var=temp;Var <= 8;Var--)
+{
+loc = loc + (loc * var)
+var = var * 10;
+}
+return loc;
+}
+}
+else
+return SEND_SMS_STRING_ERROR_WHILE_SENDING;
+else if(timerCount0 >= __GSM_MODEM_TIMEOUT_COUNT)
+return SEND_SMS_TIMEOUT_ERROR_WHILE_SENDING;
+}
+else
+return SEND_SMS_UNKNWN_ERROR;
+}
+else if(timerCount0 >= __GSM_MODEM_TIMEOUT_COUNT)
+return SEND_SMS_TIMEOUT_ERROR;
 }
 
 unsigned char gsmSetSmsFormat(unsigned char _Mode)

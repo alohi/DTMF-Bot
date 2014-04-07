@@ -47,8 +47,6 @@ extern unsigned char gsmSetSmsFormat(unsigned char);
 extern unsigned char gsmSignalStrength(void);
 extern unsigned char gsmSendSms(char*,char*);
 
-// temp
-extern void gsmSendSmsTemp(unsigned char);
 
 extern unsigned char gsmDetectCall(void);
 extern unsigned char gsmCallDisStatus(void);
@@ -60,7 +58,14 @@ extern unsigned char gsmStatus(void);
 extern void          gsmPowerUp(void);
 extern void          gsmReset(void);
 
-#define SMS_PDU_MODE 0
-#define SMS_TXT_MODE 1
+#define SEND_SMS_STRING_ERROR                 65535
+#define SEND_SMS_UNKNWN_ERROR                 65534
+#define SEND_SMS_TIMEOUT_ERROR                65533
+#define SEND_SMS_TIMEOUT_ERROR_WHILE_SENDING  65532
+#define SEND_SMS_STRING_ERROR_WHILE_SENDING   65531
+#define SEND_SMS_ERROR_WHILE_READING_LOC      65530
+
+#define SMS_PDU_MODE                          0
+#define SMS_TXT_MODE                          1
 
 #endif
