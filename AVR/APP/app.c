@@ -171,7 +171,7 @@ void app(void)
 	  {
 		  ledBlinkOne(2,100,20);
 		  	  //gsmSendSms(MOB_NO,"Fire Detected");
-				 gsmSendSmsTemp(1);
+//				 gsmSendSmsTemp(1);
 	  }
   }
     else if(sensorsDetectSmoke() == 0)
@@ -181,7 +181,7 @@ void app(void)
 	    	  if(var == 0)
 	    	  {
 		    	  ledBlinkOne(3,100,20);
-		    	  gsmSendSmsTemp(2);
+	//	    	  gsmSendSmsTemp(2);
     }
 	}
   

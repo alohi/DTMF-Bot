@@ -316,7 +316,7 @@ else
 {
 for(Var=temp;Var <= 8;Var--)
 {
-loc = loc + (loc * var)
+loc = loc + (loc * var);
 var = var * 10;
 }
 return loc;
@@ -324,7 +324,7 @@ return loc;
 }
 else
 return SEND_SMS_STRING_ERROR_WHILE_SENDING;
-else if(timerCount0 >= __GSM_MODEM_TIMEOUT_COUNT)
+ if(timerCount0 >= __GSM_MODEM_TIMEOUT_COUNT)
 return SEND_SMS_TIMEOUT_ERROR_WHILE_SENDING;
 }
 else

@@ -45,7 +45,7 @@ extern unsigned char gsmGetRegStatus(void);
 extern unsigned char gsmNtwkStatus(void);
 extern unsigned char gsmSetSmsFormat(unsigned char);
 extern unsigned char gsmSignalStrength(void);
-extern unsigned char gsmSendSms(char*,char*);
+extern unsigned int  gsmSendSms(char*,char*);
 
 
 extern unsigned char gsmDetectCall(void);
