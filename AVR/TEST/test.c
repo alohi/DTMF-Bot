@@ -5,6 +5,8 @@
 #include "sensors.h"
 #include "motor.h"
 #include "led.h"
+#include "app.h"
+#include "timer.h"
 
 void testledOnOff(void)
 {
@@ -233,4 +235,45 @@ Serialprint("Motor Stop\n");
 }
 }
 }
+}
+
+
+void testTimer(void)
+{
+	unsigned int count = 0;
+	signed int ms = 0;
+	signed int ss = 0;
+	timerClearCount(HW_TIMER2);
+	timerBegin(__CLK__FREQUENCY,__GSM_MODEM_TIMEOUT_US,HW_TIMER2);
+	timerEnableInterrupt(HW_TIMER2);
+	timerStart(HW_TIMER2);
+	while(1)
+	{
+		if(timerCount2 >= 1000)
+		{
+			timerCount2 = 0;
+			ms++;
+		/*	if(ms == 1000)
+			{
+				ms = 0;
+				ss++;
+				SerialIntWrite(ss,10);
+			    Serialwrite(LF);
+			}*/
+						SerialIntWrite(ms,10);
+						Serialwrite(LF);
+		}
+	}
+}
+
+void uartISRTest(void)
+{
+	while(1)
+	{
+		if(uartNewLineFlag == 1)
+		{
+			Serialprint((char*)uartReadBuffer);
+			Serialflush();
+		}
+	}
 }

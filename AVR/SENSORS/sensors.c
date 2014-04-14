@@ -73,7 +73,7 @@ unsigned char sensorsDetectObstacle(void)
 {
 if(sensorsReadIR() > IR_THRESHOLD)
 {
-	_delay_milli(1000);
+//	_delay_milli(1000);
 	return 0;  // Obstacle Found
 }
 else
@@ -82,9 +82,9 @@ return 1; // No obstacle
 
 unsigned char sensorsDetectFire(void)
 {
-if(sensorsReadFire() > IR_THRESHOLD)
+if(sensorsReadFire() > FIRE_THRESHOLD)
 {
-	_delay_milli(1000);
+//	_delay_milli(1000);
 return 0;  // Fire Detected	
 }
 else

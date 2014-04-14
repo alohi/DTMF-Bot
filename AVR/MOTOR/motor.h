@@ -6,7 +6,7 @@
 #include <avr/io.h>
 
 // Turning Delay
-#define MOTOR_TURN_DELAY 2000
+#define MOTOR_TURN_DELAY 1000
 
 // All Enable Pin of motor ( 3 (Arduino) -> EN (L293D)
 /*#define EN_DIR    DDRD
@@ -33,22 +33,22 @@
 #define MB2_PORT  PORTD
 #define MB2_BIT   1 << 7
 
-// 8 (Arduino) -> MA1 of L293D - 2
+// 8 (Arduino) -> MC1 of L293D - 2
 #define MC1_DIR   DDRB
 #define MC1_PORT  PORTB
 #define MC1_BIT   1 << 0
 
-// 9 (Arduino) -> MA2 of L293D - 2
+// 9 (Arduino) -> MC2 of L293D - 2
 #define MC2_DIR   DDRB
 #define MC2_PORT  PORTB
 #define MC2_BIT   1 << 1
 
-// 10 (Arduino) -> MB1 of L293D - 2
+// 10 (Arduino) -> MD1 of L293D - 2
 #define MD1_DIR   DDRB
 #define MD1_PORT  PORTB
 #define MD1_BIT   1 << 2
 
-// 10 (Arduino) -> MB2 of L293D - 2
+// 10 (Arduino) -> MD2 of L293D - 2
 #define MD2_DIR   DDRB
 #define MD2_PORT  PORTB
 #define MD2_BIT   1 << 3

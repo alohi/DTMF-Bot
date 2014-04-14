@@ -5,10 +5,17 @@
 #include <avr/io.h>
 
 // Clock Frequency (Internal 8 Mhz)
-#define __CLK__FREQUENCY 8000000
+#define __CLK__FREQUENCY 8000000UL
 
 // Gsm Modem baud rate
 #define __BAUD_RATE___ 9600
+
+#define  CALL_PICK_TRIAL_MAX 10
+#define __APP_TIMER_TIMEOUT  20
+
+#define SENSOR_ENABLE
+#define SMS_ENABLE
+//#define AUTO_STOP
 
 
 #define MOB_NO "9342833087"

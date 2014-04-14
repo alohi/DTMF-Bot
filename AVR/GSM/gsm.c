@@ -3,6 +3,9 @@
 #include "gsm.h"
 #include "app.h"
 #include "avr_delay.h"
+#include "timer.h"
+
+
 
 void gsmTimerStart(void)
 {
@@ -20,7 +23,7 @@ timerDisableInterrupt(HW_TIMER0);
 
 unsigned char gsmGetTimeout(void)
 {
-if(timerCount0 >= __GSM_MODEM_TIMEOUT_COUNT)
+if(timerCount0 > __GSM_MODEM_TIMEOUT_COUNT)
 return 0;
 else 
 return 1;
@@ -99,10 +102,9 @@ return 0;
 }
 else 
 {
-	//Serialflush();
+	Serialflush();
 	return 1;
 }
-
 }
 else 
 return 2;
@@ -143,7 +145,7 @@ if(uartNewLineCount >= 2)
 		}
 		else
 		{
-			Serialflush();
+			//Serialflush();
 			return 1;	   // String Error
 		}
 }
@@ -232,7 +234,11 @@ Serialflush();
 return val;
 }
 else
-return 15;
+{
+	//Serialflush();
+	return 15;
+}
+
 }
 else
 return 15;
@@ -288,9 +294,10 @@ gsmTimerStart();
 Serialprint("AT+CMGS=\"");
 Serialprint(No);
 Serialprint("\"\r\n");
-while(gsmGetTimeout() == 1 && uartReadBuffer[uartReadCount] != ' ');
+while(gsmGetTimeout() == 1 && uartNewLineFlag == 0);
 gsmTimerStop();
-if(uartReadCount >= 3)
+//if(uartReadCount >= 3)
+if(uartNewLineFlag == 1)
 {
 if(uartReadBuffer[2] != 0x3E && uartReadBuffer[uartReadCount] != 0x20)
 {
@@ -332,6 +339,7 @@ return SEND_SMS_UNKNWN_ERROR;
 }
 else if(timerCount0 >= __GSM_MODEM_TIMEOUT_COUNT)
 return SEND_SMS_TIMEOUT_ERROR;
+return 0; // dummy
 }
 
 unsigned char gsmSetSmsFormat(unsigned char _Mode)
@@ -384,7 +392,7 @@ void gsmPowerUp(void)
 
 unsigned char gsmStatus(void)
 {
-return MODEM_STA_KEY_PIN & MODEM_STA_KEY_BIT;
+return MODEM_STA_KEY_PORT & MODEM_STA_KEY_BIT;
 }
 
 /*unsigned char gsmTryPowerUp(void)
@@ -400,12 +408,38 @@ void gsmPortinit(void)
 {
 MODEM_PWR_KEY_DIR |= MODEM_PWR_KEY_BIT;
 MODEM_RST_KEY_DIR |= MODEM_RST_KEY_BIT;
-MODEM_STA_KEY_DIR &= MODEM_STA_KEY_BIT;
+MODEM_STA_KEY_DIR &= ~MODEM_STA_KEY_BIT;
 
 // Enable Pull Up 
 MODEM_PWR_KEY_PORT |= MODEM_PWR_KEY_BIT;
 MODEM_RST_KEY_PORT |= MODEM_RST_KEY_BIT;
 MODEM_STA_KEY_PORT |= MODEM_STA_KEY_BIT;
 }
+
+void gsmSendSmsTemp(unsigned char _Warn)
+{
+	Serialflush();
+	Serialprint("AT+CMGS=\"9342833087\"\r\n");
+	_delay_milli(1000);
+	if(_Warn == 0)
+	{
+		Serialprint("Obstacle Detected\r\n");
+		Serialwrite(0x1A);
+	}
+	else if(_Warn == 1)
+	{
+		Serialprint("Fire Detected\r\n");
+		Serialwrite(0x1A);
+	}
+	else if(_Warn == 2)
+	{
+		Serialprint("Smoke Detected\r\n");
+		Serialwrite(0x1A);
+	}
+	_delay_milli(100);
+	Serialflush();
+}
+
+
 
 

@@ -4,6 +4,9 @@
 
 #include "uart.h"
 #include "timer.h"
+#include "avr/io.h"
+
+// Note : For timer use TIMER1
 
 #define GSM_REGISTER_STATUS_TRIAL_MAX 30
 #define GSM_PWR_KEY_COUNT             1000
@@ -12,24 +15,24 @@
 // Gsm Modem timeout delay in microseconds
 #define __GSM_MODEM_TIMEOUT_US        1000
 
-#define __GSM_MODEM_TIMEOUT_COUNT     100 // ( So totale timeout : (__GSM_MODEM_TIMEOUT_US * __GSM_MODEM_TIMEOUT_COUNT)us, or __GSM_MODEM_TIMEOUT_COUNT ms (If __GSM_MODEM_TIMEOUT_US is 1000)
+#define __GSM_MODEM_TIMEOUT_COUNT     100 // ( So total timeout : (__GSM_MODEM_TIMEOUT_US * __GSM_MODEM_TIMEOUT_COUNT)us, or __GSM_MODEM_TIMEOUT_COUNT ms (If __GSM_MODEM_TIMEOUT_US is 1000)
 
 
 // Power Pin
-#define MODEM_PWR_KEY_DIR  DDRB
-#define MODEM_PWR_KEY_PORT PORTB
-#define MODEM_PWR_KEY_BIT  1 << 5
+#define MODEM_PWR_KEY_DIR  DDRD
+#define MODEM_PWR_KEY_PORT PORTD
+#define MODEM_PWR_KEY_BIT  1 << 3
 
 // Reset Pin
 #define MODEM_RST_KEY_DIR  DDRB
 #define MODEM_RST_KEY_PORT PORTB
-#define MODEM_RST_KEY_BIT  1 << 4
+#define MODEM_RST_KEY_BIT  1 << 5
 
 // Status pin
-#define MODEM_STA_KEY_DIR  DDRD
-#define MODEM_STA_KEY_PIN  PIND
-#define MODEM_STA_KEY_PORT PORTD
-#define MODEM_STA_KEY_BIT  1 << 3
+#define MODEM_STA_KEY_DIR  DDRB
+#define MODEM_STA_KEY_PIN  PINB
+#define MODEM_STA_KEY_PORT PORTB
+#define MODEM_STA_KEY_BIT  1 << 4
 
 // Gsm Initiation
 #define gsmBegin(osc,baud) Serialbegin(osc,baud)
@@ -57,6 +60,8 @@ extern void          gsmPortinit(void);
 extern unsigned char gsmStatus(void);
 extern void          gsmPowerUp(void);
 extern void          gsmReset(void);
+
+extern void gsmSendSmsTemp(unsigned char);
 
 #define SEND_SMS_STRING_ERROR                 65535
 #define SEND_SMS_UNKNWN_ERROR                 65534

@@ -10,5 +10,7 @@ extern void testgsmSimul(void);
 extern void testMotor(void);
 extern void testReadSensors(void);
 extern void testSesnors(void);
+extern void testTimer(void);
+extern void uartISRTest(void);
 
 #endif
