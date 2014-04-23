@@ -194,12 +194,15 @@ void testSesnors(void)
 
 void testReadSensors(void)
 {
-unsigned int val1,val2;
+unsigned int val1,val2,val3;
 val1 = sensorsReadIR();
 val2 = sensorsReadFire();
+val3 = sensorsDetectSmoke();
 SerialIntWrite(val1,10);
 Serialwrite(9);
 SerialIntWrite(val2,10);
+Serialwrite(9);
+SerialIntWrite(val3,10);
 Serialwrite('\n');
 }
 

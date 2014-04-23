@@ -293,17 +293,17 @@ Serialflush();
 gsmTimerStart();
 Serialprint("AT+CMGS=\"");
 Serialprint(No);
-Serialprint("\"\r\n");
+Serialprint("\"\r");
 while(gsmGetTimeout() == 1 && uartNewLineFlag == 0);
 gsmTimerStop();
 //if(uartReadCount >= 3)
 if(uartNewLineFlag == 1)
 {
-if(uartReadBuffer[2] != 0x3E && uartReadBuffer[uartReadCount] != 0x20)
+if(uartReadBuffer[2] != 0x3E && uartReadBuffer[3] != 0x20)
 {
 return SEND_SMS_STRING_ERROR;
 }
-else if(uartReadBuffer[2] == 0x3E && uartReadBuffer[uartReadCount] == 0x20) // Now you can send sms
+else if(uartReadBuffer[2] == 0x3E && uartReadBuffer[3] == 0x20) // Now you can send sms
 {
 Serialflush();
 gsmTimerStart();
@@ -345,8 +345,8 @@ return 0; // dummy
 unsigned char gsmSetSmsFormat(unsigned char _Mode)
 {
     Serialflush();
-	Serialprint("AT+CMGF=");
-	Serialwrite(_Mode+48);
+	Serialprint("AT+CMGF=1");
+	//Serialwrite(_Mode+48);
 	Serialprint("\r\n");
 	gsmTimerStart();
 	while(gsmGetTimeout() == 1 && uartNewLineCount < 2);
@@ -373,54 +373,14 @@ unsigned char gsmSetSmsFormat(unsigned char _Mode)
 	return 3;
 }
 
-void gsmReset(void)
-{
-	MODEM_RST_KEY_PORT &= ~(MODEM_RST_KEY_BIT);
-	_delay_milli(GSM_PWR_KEY_COUNT);
-	MODEM_RST_KEY_PORT |= MODEM_RST_KEY_BIT;
-	_delay_milli(GSM_PWR_KEY_COUNT);
-}
 
-void gsmPowerUp(void)
-{
-	MODEM_RST_KEY_PORT |= MODEM_RST_KEY_BIT;
-	MODEM_PWR_KEY_PORT &= ~(MODEM_PWR_KEY_BIT);
-	_delay_milli(GSM_PWR_KEY_COUNT);
-	MODEM_PWR_KEY_PORT |= MODEM_PWR_KEY_BIT;
-	_delay_milli(GSM_PWR_KEY_COUNT);
-}
-
-unsigned char gsmStatus(void)
-{
-return MODEM_STA_KEY_PORT & MODEM_STA_KEY_BIT;
-}
-
-/*unsigned char gsmTryPowerUp(void)
-{
-	MODEM_RST_KEY_PORT |= MODEM_RST_KEY_BIT;
-	MODEM_PWR_KEY_PORT &= ~(MODEM_PWR_KEY_BIT);
-	delay_ms(GSM_PWR_KEY_COUNT);
-	MODEM_PWR_KEY_PORT |= MODEM_PWR_KEY_BIT;
-	delay_ms(GSM_PWR_KEY_COUNT);
-}*/
-
-void gsmPortinit(void)
-{
-MODEM_PWR_KEY_DIR |= MODEM_PWR_KEY_BIT;
-MODEM_RST_KEY_DIR |= MODEM_RST_KEY_BIT;
-MODEM_STA_KEY_DIR &= ~MODEM_STA_KEY_BIT;
-
-// Enable Pull Up 
-MODEM_PWR_KEY_PORT |= MODEM_PWR_KEY_BIT;
-MODEM_RST_KEY_PORT |= MODEM_RST_KEY_BIT;
-MODEM_STA_KEY_PORT |= MODEM_STA_KEY_BIT;
-}
+#define SMS_DELAY 500
 
 void gsmSendSmsTemp(unsigned char _Warn)
 {
 	Serialflush();
-	Serialprint("AT+CMGS=\"9342833087\"\r\n");
-	_delay_milli(1000);
+	Serialprint("AT+CMGS=\"9743232483\"\r\n");
+	_delay_milli(SMS_DELAY);
 	if(_Warn == 0)
 	{
 		Serialprint("Obstacle Detected\r\n");
@@ -436,7 +396,6 @@ void gsmSendSmsTemp(unsigned char _Warn)
 		Serialprint("Smoke Detected\r\n");
 		Serialwrite(0x1A);
 	}
-	_delay_milli(100);
 	Serialflush();
 }
 

@@ -49,24 +49,24 @@ unsigned int sensorsReadIR(void)
 {
 	unsigned int val = 0;
 	unsigned int i;
-	/*for(i=0;i<=AVG_SAMPLE_RATE;i++)
+	for(i=0;i<=AVG_SAMPLE_RATE;i++)
 	{
 		val = val +  readAnalog(IR_CH);
 	}
-	return val / AVG_SAMPLE_RATE;*/
-	return readAnalog(IR_CH);
+	return val / AVG_SAMPLE_RATE;
+	return val;
 }
 
 unsigned int sensorsReadFire(void)
 {
 		unsigned int val = 0;
 		unsigned int i;
-		/*for(i=0;i<=AVG_SAMPLE_RATE;i++)
+		for(i=0;i<=AVG_SAMPLE_RATE;i++)
 		{
 			val = val +  readAnalog(FIR_CH);
 		}
-		return val / AVG_SAMPLE_RATE;*/
-		return readAnalog(FIR_CH);
+		return val / AVG_SAMPLE_RATE;
+		return val;
 }
 
 unsigned char sensorsDetectObstacle(void)

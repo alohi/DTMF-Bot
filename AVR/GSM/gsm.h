@@ -8,14 +8,14 @@
 
 // Note : For timer use TIMER1
 
-#define GSM_REGISTER_STATUS_TRIAL_MAX 30
+#define GSM_REGISTER_STATUS_TRIAL_MAX 100
 #define GSM_PWR_KEY_COUNT             1000
 #define GSM_RST_KEY_COUNT             1000
 
 // Gsm Modem timeout delay in microseconds
 #define __GSM_MODEM_TIMEOUT_US        1000
 
-#define __GSM_MODEM_TIMEOUT_COUNT     100 // ( So total timeout : (__GSM_MODEM_TIMEOUT_US * __GSM_MODEM_TIMEOUT_COUNT)us, or __GSM_MODEM_TIMEOUT_COUNT ms (If __GSM_MODEM_TIMEOUT_US is 1000)
+#define __GSM_MODEM_TIMEOUT_COUNT      2000 // ( So total timeout : (__GSM_MODEM_TIMEOUT_US * __GSM_MODEM_TIMEOUT_COUNT)us, or __GSM_MODEM_TIMEOUT_COUNT ms (If __GSM_MODEM_TIMEOUT_US is 1000)
 
 
 // Power Pin
@@ -28,11 +28,6 @@
 #define MODEM_RST_KEY_PORT PORTB
 #define MODEM_RST_KEY_BIT  1 << 5
 
-// Status pin
-#define MODEM_STA_KEY_DIR  DDRB
-#define MODEM_STA_KEY_PIN  PINB
-#define MODEM_STA_KEY_PORT PORTB
-#define MODEM_STA_KEY_BIT  1 << 4
 
 // Gsm Initiation
 #define gsmBegin(osc,baud) Serialbegin(osc,baud)
@@ -55,11 +50,6 @@ extern unsigned char gsmDetectCall(void);
 extern unsigned char gsmCallDisStatus(void);
 extern unsigned char gsmConnectCall(void);
 extern unsigned char gsmReadDtmf(void);
-
-extern void          gsmPortinit(void);
-extern unsigned char gsmStatus(void);
-extern void          gsmPowerUp(void);
-extern void          gsmReset(void);
 
 extern void gsmSendSmsTemp(unsigned char);
 

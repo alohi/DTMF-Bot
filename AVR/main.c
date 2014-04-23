@@ -27,18 +27,19 @@ DDRB |= 1 << 0;
 DDRB |= 1 << 1;
 DDRB |= 1 << 2;
 DDRB |= 1 << 3;
-
 _delay_milli(3000);
 //testTimer();
 /*testgsmSimul();*/
 //testMotor();
 bootTest();
-Serialflush();
+//Serialflush();
 while(1)
 {
 app();	
 //testReadSensors();
 //testSesnors();
+//testReadSensors();
+//_delay_milli(100);
 }
 
 /*while (1)

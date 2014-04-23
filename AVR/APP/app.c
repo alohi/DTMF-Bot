@@ -7,14 +7,17 @@
 #include "gsm.h"
 #include "avr_delay.h"
 #include "led.h"
+#include "avr/wdt.h"
 
 unsigned char flag = 0;
 unsigned char CallFlag = 0;
 unsigned char appLedCount = 1;
-unsigned char FireFlag = 0;
-	unsigned char var;
-	unsigned char dtmfVal;
-	unsigned char callPickTrials = 0;
+unsigned char var;
+unsigned char dtmfVal;
+unsigned char callPickTrials = 0;
+unsigned char FireWarn = 0;
+unsigned char SmokeWarn = 0;
+unsigned char ObstFlag = 1;
 
 void appTimerStart(void)
 {
@@ -40,20 +43,15 @@ unsigned char appTimerGetTimeOut(void)
 
 void initSystem(void)
 {
+	wdt_disable();
 	Serialbegin(__CLK__FREQUENCY,__BAUD_RATE___);
 	setSerialinterrupt();
 	motorBegin();
 	ledBegin();
 	sensorsBegin();
-	gsmPortinit();
-	/*if(gsmStatus() == 0)
-	{
-		gsmReset();
-		_delay_milli(500);
-	    gsmPowerUp();
-		_delay_milli(500);
-	}*/
+	#ifndef FAST_MODE
 	appTimerStart();
+	#endif
 }
 
 void bootTest(void)
@@ -68,22 +66,23 @@ void bootTest(void)
 	if(var == 0)
 	{
 	//ledBlinkOne(1,50,20);
+	#ifndef FAST_MODE_START_UP
 	ledBlinkDouble(1,2,50,10);
+	#endif
 	}
 	else
 	{
-		/*while (1)
-		{
-					ledBlinkOne(1,1000,5);
-		}*/
-		//Serialflush();
+		#ifndef FAST_MODE_START_UP
 		ledOn(1,1);
 		ledOn(2,1);
+		#endif
 		goto test1;
 	}
+	#ifndef FAST_MODE_START_UP
 		ledNo(0);
 		
 		_delay_milli(3000);
+   #endif
 	
 	test2:
 	// Register Test
@@ -91,19 +90,21 @@ void bootTest(void)
 	if(var == 0)
 	{
 		//ledBlinkOne(2,50,20);
+		#ifndef FAST_MODE_START_UP
 		ledBlinkDouble(1,3,50,10);
+		#endif
 	}
 	else
 	{
-		/*while (1)
-		{
-			ledBlinkOne(2,1000,5);
-		}*/
+		#ifndef FAST_MODE_START_UP
 				ledOn(1,1);
 				ledOn(3,1);
+				#endif
 				goto test2;
 	}
+	#ifndef FAST_MODE_START_UP
 	ledNo(0);
+	#endif
 	
 	// Enable Dtmf
 	test3:
@@ -111,40 +112,78 @@ void bootTest(void)
 		if(var == 0)
 		{
 			//ledBlinkOne(3,50,20);
+			#ifndef FAST_MODE_START_UP
 			ledBlinkDouble(2,4,50,10);
+			#endif
 		}
 		else
 		{
-			/*while (1)
-			{
-				ledBlinkOne(3,1000,5);
-			}*/
+			#ifndef FAST_MODE_START_UP
 					ledOn(2,1);
 					ledOn(4,1);
+					#endif
 					goto test3;
 		}
 	
+	#ifdef STARTUP_SMS
+	var = gsmSetSmsFormat(SMS_TXT_MODE);
+	if(var == 0)
+	{
+		ledBlinkDouble(1,2,100,10);
+	}
+	else
+	ledBlinkDouble(3,4,100,50);
+	ledNo(0);
+	
+	var = gsmSendSms(MOB_NO,MSG_START);
+	if(var == SEND_SMS_STRING_ERROR)
+	ledNo(1);
+	else if(var == SEND_SMS_UNKNWN_ERROR)
+	ledNo(2);
+		else if(var == SEND_SMS_TIMEOUT_ERROR)
+		ledNo(3);
+			else if(var == SEND_SMS_TIMEOUT_ERROR_WHILE_SENDING)
+			ledNo(4);
+				else if(var == SEND_SMS_STRING_ERROR_WHILE_SENDING)
+				ledNo(5);
+								else if(var == SEND_SMS_ERROR_WHILE_READING_LOC)
+								ledNo(6);
+								else
+								ledBlinkDouble(3,4,50,30);
+								_delay_milli(100);
+								ledNo(0);
+								Serialflush();
+	#endif
+}
+
+ISR(WDT_vect)
+{
+	asm volatile ("  jmp 0");
 }
 
 void app(void)
 {
-
-
 	// Check for new Call
 	if(CallFlag == 0)
 	{
 	if(gsmDetectCall() == 0)
 	{
+		#ifndef FAST_MODE
 		timerCount1 = 0; 
 		AppTimerStop();
+		#endif
 		back:
 		var = gsmConnectCall();
 		CallFlag = 1;
+		#ifndef FAST_MODE
 			ledNo(15);	
+			#endif
 		if(var == 0)
 		{
 			    CallFlag = 1;
-						ledNo(15);	
+				#ifndef FAST_MODE
+						ledNo(0);
+						#endif	
 		}
 		else
 		{
@@ -165,6 +204,7 @@ void app(void)
 		}
 	}
 		 	// Toggle LED's
+			 #ifndef FAST_MODE
 		 	if(appTimerGetTimeOut() == 0)
 		 	{
 			 	timerCount1 = 0;
@@ -173,53 +213,74 @@ void app(void)
 			 	if(appLedCount == 16)
 			 appLedCount = 1;
 	        }
+			#endif
 	}
 		
 // If Call is connected
- /*else if(CallFlag == 1)
- {*/
+ else
+ {
 	  // Read Dtmf		 
   dtmfVal = gsmReadDtmf();
   if(dtmfVal < 15)
   {
-	  //ledNo(dtmfVal);
 	  switch(dtmfVal)
 	  {
 		  case DTMF_FW : 
+		  #ifndef FAST_MODE
 		                 ledOn(1,1);
 						 ledOn(2,1);
 						 ledOn(3,0);
-						 ledOn(4,0);
+						 ledOn(4,0); 
+		#endif
 						 motorForward();
 		                 break;
-		  case DTMF_BW : 
+		  case DTMF_BW :
+		   #ifndef FAST_MODE
 		                 ledOn(1,0);
 		                 ledOn(2,0);
 		                 ledOn(3,1);
 		                 ledOn(4,1);
+						 #endif
 						 motorBackward();
 		                 break;
-		  case DTMF_LT : 
+		  case DTMF_LT :
+		   #ifndef FAST_MODE
 		                 ledOn(1,1);
 		                 ledOn(2,0);
 		                 ledOn(3,0);
 		                 ledOn(4,0);
-						 motorLeft();
+						 #endif
+						 motorLeft(); 
 		                 break;
           case DTMF_RT :
+		  #ifndef FAST_MODE
 		                ledOn(1,0);
 		                ledOn(2,1);
 		                ledOn(3,0);
 		                ledOn(4,0);
+						 #endif
 						 motorRight();
 		                 break;
-		  case DTMF_ST : 
+		  case DTMF_ST :
+		   #ifndef FAST_MODE
 		                ledOn(1,1);
 		                ledOn(2,1);
 		                ledOn(3,1);
-		                ledOn(4,1);
+		                ledOn(4,1); 
+						#endif
 						motorStop();
 	                   break;
+		 case DTMF_DO :
+					   #ifndef FAST_MODE
+					   ledBlinkDouble(1,2,50,10);
+					   #endif
+					   ObstFlag = 0;
+					   break;
+		case DTMF_EO :
+		 #ifndef FAST_MODE
+					   ledBlinkDouble(3,4,50,10);
+					   #endif
+					   ObstFlag = 1;
 	  }
   }
   
@@ -231,6 +292,7 @@ void app(void)
 	  			    motorStop();
 					Serialflush();
                     CallFlag = 0;
+					#ifndef FAST_MODE
 	  				ledBlinkOne(1,50,2);
 	  				ledBlinkOne(2,50,2);
 	  				ledBlinkOne(3,50,2);
@@ -238,93 +300,57 @@ void app(void)
 	  				ledNo(0);
 					timerCount1 = 0;
 					appTimerStart();
+					#endif
+					FireWarn = 0;
+					SmokeWarn = 0;
+					ObstFlag = 0;
+					/*wdt_enable(WDTO_1S);
+					wdt_reset();
+					sei();*/
   }
   
     #ifdef SENSOR_ENABLE
-  if(sensorsDetectObstacle() == 0)
+  if(sensorsDetectObstacle() == 0 && ObstFlag == 1)
     {
 		#ifdef AUTO_STOP
 	    motorStop();
+		ledNo(15);
 		#endif
-	  /*  ledOn(1,0);
-	    ledOn(2,0);
-	    ledOn(3,1);
-	    ledOn(4,1);*/
     }
 	
-	  else if(sensorsDetectFire() == 0)
+	#ifdef FIRE_ENABLE
+	  else if(sensorsDetectFire() == 0 && FireWarn < 20)
 	  {
-		  				  #ifdef SMS_ENABLE
+		  FireWarn++;
+		  #ifdef SMS_ENABLE
+		  if(FireWarn == 20) 
+		  {
 		  var = gsmSetSmsFormat(1);
 		  if(var == 0)
 		  {
-			//  ledBlinkOne(3,10,100);
-			/*  var = gsmSendSms(MOB_NO,"Fire Detected");
-			  ledBlinkOne(3,10,20);*/
 			gsmSendSmsTemp(1);
 		  }
+		  }
 		  #endif
+
 		  
 	  }
 	  
-	      else if(sensorsDetectSmoke() == 0)
+#endif	  
+	  
+	      else if(sensorsDetectSmoke() == 0 && SmokeWarn == 0)
 	      {
-			  				  #ifdef SMS_ENABLE
+			  SmokeWarn = 1;
+			  #ifdef SMS_ENABLE
 		      var = gsmSetSmsFormat(1);
 		      if(var == 0)
 		      {
-			     // ledBlinkOne(4,10,100);
      	    	  gsmSendSmsTemp(2);
-				
 		      }
 			  #endif
  }
  #endif
-// }
-// }
-
-
-	//  ledBlinkOne(1,20,10);
-	  //var = gsmSetSmsFormat(1);
-	/*  if(var == 0)
-	  {
-		  ledBlinkOne(1,100,20);*/
-		  //gsmSendSms(MOB_NO,"Obstacle Detected");
-		  // gsmSendSmsTemp(0);
-	  //}
-/*	 if(flag == 0 && CallFlag == 1)
-	 {
-      flag = 1;
-	  motorLeft();
-	 }
-	 else if(flag == 1 && CallFlag == 1)
-	 {
-		 flag = 0;
-		 motorRight();
-	 }
-  }
-  else if(sensorsDetectFire() == 0)
-  {
-	  ledBlinkOne(2,20,10);
-	  var = gsmSetSmsFormat(1);
-	  if(var == 0)
-	  {
-		  ledBlinkOne(2,100,20);
-		  	  //gsmSendSms(MOB_NO,"Fire Detected");
-//				 gsmSendSmsTemp(1);
-	  }
-  }
-    else if(sensorsDetectSmoke() == 0)
-    {
-		ledBlinkOne(3,20,10);
-	    	  var = gsmSetSmsFormat(1);
-	    	  if(var == 0)
-	    	  {
-		    	  ledBlinkOne(3,100,20);
-	//	    	  gsmSendSmsTemp(2);
-    }
-	}*/
-  
+ }
   }
 
 

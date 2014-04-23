@@ -2,7 +2,7 @@
 #ifndef __avr_delay_h__
 #define __avr_delay_h__
 
-#define F_CPU 8000000UL
+#define F_CPU 16000000UL
 #include <util/delay.h>
 
 extern void delay_us(unsigned int);

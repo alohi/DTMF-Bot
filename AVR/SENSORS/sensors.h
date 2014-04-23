@@ -14,7 +14,7 @@
 #define SMK_BIT         1 << 2
 
 
-#define AVG_SAMPLE_RATE 50
+#define AVG_SAMPLE_RATE 10
 
 #define IR_THRESHOLD    300 // 200 is for more distance
 #define FIRE_THRESHOLD  300

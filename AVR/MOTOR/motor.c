@@ -91,12 +91,7 @@ MC2_PORT |=  (MC2_BIT);
 	
 MD1_PORT |=  (MD1_BIT);
 MD2_PORT &=  ~(MD2_BIT);
-	_delay_milli(MOTOR_TURN_DELAY);
-		_delay_milli(MOTOR_TURN_DELAY);
-			_delay_milli(MOTOR_TURN_DELAY);
-				_delay_milli(MOTOR_TURN_DELAY);
-					_delay_milli(MOTOR_TURN_DELAY);
-	motorStop();
+
 }
 
 void motorRight(void)
@@ -114,21 +109,4 @@ void motorRight(void)
 	
 	MD1_PORT &= ~(MD1_BIT);
 	MD2_PORT |=  (MD2_BIT);
-	
-
-	/*MA1_PORT &= ~(MA1_BIT);
-	MA2_PORT &= ~(MA2_BIT);
-	MB1_PORT |=  (MB1_BIT);
-	MB2_PORT &= ~(MB2_BIT);
-	
-	MC1_PORT |=  (MC1_BIT);
-	MC2_PORT &= ~(MC2_BIT);
-	MD1_PORT &= ~(MD1_BIT);
-	MD2_PORT &= ~(MD2_BIT);*/
-	_delay_milli(MOTOR_TURN_DELAY);
-	_delay_milli(MOTOR_TURN_DELAY);
-	_delay_milli(MOTOR_TURN_DELAY);
-	_delay_milli(MOTOR_TURN_DELAY);
-	_delay_milli(MOTOR_TURN_DELAY);
-	motorStop();
 }
