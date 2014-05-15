@@ -16,8 +16,8 @@
 #define SENSOR_ENABLE
 #define SMS_ENABLE
 #define AUTO_STOP
-//#define STARTUP_SMS
-//#define FIRE_ENABLE
+#define STARTUP_SMS
+#define FIRE_ENABLE
 
 #define MSG_START "Device Started"
 #define MSG_FIRE  "Fire Detected"
@@ -30,8 +30,8 @@
 #define DTMF_FW    2
 #define DTMF_BW    8
 #define DTMF_ST    5
-#define DTMF_LT    4
-#define DTMF_RT    6
+#define DTMF_LT    6
+#define DTMF_RT    4
 #define DTMF_SP    7
 #define DTMF_SM    9
 #define DTMF_DO    1
@@ -48,4 +48,4 @@ extern void app(void);
 #endif
 
 
-
+	

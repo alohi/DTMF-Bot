@@ -379,7 +379,8 @@ unsigned char gsmSetSmsFormat(unsigned char _Mode)
 void gsmSendSmsTemp(unsigned char _Warn)
 {
 	Serialflush();
-	Serialprint("AT+CMGS=\"9743232483\"\r\n");
+	//Serialprint("AT+CMGS=\"9743232483\"\r\n");
+	Serialprint("AT+CMGS=\"9845742906\"\r\n");
 	_delay_milli(SMS_DELAY);
 	if(_Warn == 0)
 	{
